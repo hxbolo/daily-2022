@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="cn">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>defineProperty 多个成员</title>
+</head>
+<body>
+  <div id="app">
+    hello
+  </div>
+  <script>
+    // 模拟vue中大data选项
+    let data= {
+      msg:'hx',
+      count: 10
+    }
+
+    // 模拟vue 实例
+    let vm = new Proxy(data,{
+      get(targe,key){
+        console.log(targe,targe[key]);
+        return targe[key]
+      },
+      set(targe,key,newVal){
+        if(newVal == targe[key]) return
+        targe[key] = newVal
+        document.querySelector('#app').textContent = targe[key]
+      }
+      
+    })
+  
+    vm.msg = 'hx'
+    vm.count=20
+    console.log(vm.msg);
+  </script>
+</body>
+</html>
+
+

@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="cn">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>defineProperty</title>
+</head>
+<body>
+  <div id="app">
+    hello
+  </div>
+  <script>
+    // 模拟vue中大data选项
+    let data= {
+      msg:'hx'
+    }
+
+    // 模拟vue 实例
+    let vm = {}
+    // 数据劫持： 当访问或者设置vm z中的成员做干预操作
+    Object.defineProperty(vm,'msg',{
+      enumerable:true,
+      configurable:true,
+      get(){
+        console.log('get', data.msg);
+        return data.msg
+      },
+      set(newVal){
+        if(newVal == data.msg){
+          return
+        }
+        console.log('set',newVal,);
+        data.msg = newVal
+        document.querySelector('#app').textContent = data.msg
+      }
+
+    })
+
+    vm.msg = 'aaaa'
+    console.log(vm.msg);
+  </script>
+</body>
+</html>

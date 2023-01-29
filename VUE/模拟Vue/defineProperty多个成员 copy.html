@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="cn">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>defineProperty 多个成员</title>
+</head>
+<body>
+  <div id="app">
+    hello
+  </div>
+  <script>
+    // 模拟vue中大data选项
+    let data= {
+      msg:'hx',
+      count: 10
+    }
+
+    // 模拟vue 实例
+    let vm = {}
+
+    Object.keys(data).forEach(key =>{
+      Object.defineProperty(vm,key,{
+        // 可枚举的
+        enumerable:true,
+        configurable:true,
+        get(){
+          console.log('get',key,data[key]);
+          return data[key]
+        },
+        set(newVal){
+          if(newVal == data[key]) return
+
+          data[key] =  newVal
+          console.log('set',key,data[key]);
+          // 渲染到页面中
+          document.querySelector('#app').textContent=data[key]
+        }
+      })
+    })
+    
+    vm.msg = 'hx'
+    vm.count=20
+    console.log(vm.msg);
+  </script>
+</body>
+</html>

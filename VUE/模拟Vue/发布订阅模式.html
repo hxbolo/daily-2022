@@ -1,0 +1,45 @@
+
+<!DOCTYPE html>
+<html lang="cn">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>发布订阅模式</title>
+</head>
+<body>
+  <script>
+  // 事件触发器
+  class EvnetRmitter{
+    constructor (){
+      this.subs = Object.create(null)
+    }
+    // 注册事件
+    $on(evnetType, handler){
+      this.subs[evnetType] =  this.subs[evnetType] || []
+      this.subs[evnetType].push(handler)
+    }
+    // 触发事件
+    $emit(evnetType){
+      if(this.subs[evnetType]){
+        this.subs[evnetType].forEach(handler => {handler()})
+      }
+      console.log(this.subs);
+    }
+  }
+
+  let em =  new EvnetRmitter()
+
+  em.$on('data',()=>{
+    console.log(1111);
+  })
+  em.$on('data',()=>{
+    console.log(222);
+  })
+
+  em.$emit('data')
+
+  
+  </script>
+</body>
+</html>
