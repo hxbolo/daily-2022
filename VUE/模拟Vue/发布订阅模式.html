@@ -1,45 +1,53 @@
-
 <!DOCTYPE html>
-<html lang="cn">
+<html lang="en">
 <head>
   <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <title>发布订阅模式</title>
+  <title>Document</title>
 </head>
 <body>
-  <script>
-  // 事件触发器
-  class EvnetRmitter{
-    constructor (){
-      this.subs = Object.create(null)
-    }
-    // 注册事件
-    $on(evnetType, handler){
-      this.subs[evnetType] =  this.subs[evnetType] || []
-      this.subs[evnetType].push(handler)
-    }
-    // 触发事件
-    $emit(evnetType){
-      if(this.subs[evnetType]){
-        this.subs[evnetType].forEach(handler => {handler()})
-      }
-      console.log(this.subs);
-    }
-  }
 
-  let em =  new EvnetRmitter()
-
-  em.$on('data',()=>{
-    console.log(1111);
-  })
-  em.$on('data',()=>{
-    console.log(222);
-  })
-
-  em.$emit('data')
-
+  <button onclick="send( 'hx')"> 模拟jsonp</button>
   
-  </script>
 </body>
+<script>
+  function jsonp ({url, params, key ,callback}){
+    var fnName = 'callback'+Date.now().toString()
+    window[fnName] = callback
+    var scriptEle = document.createElement('script')
+    scriptEle.src = url + parseParams(params) + `&${key}=${fnName}`
+    document.body.appendChild(scriptEle)
+    setTimeout(() => {
+      document.body.removeChild(scriptEle)
+    }, 0);
+  }
+  function parseParams(params){
+    var str = '?'
+    Object.keys(params).forEach(k=>{
+      str = str + k + '=' + params[k] + '&'
+    })
+    console.log('str',str.slice(0,str.length-1))
+    return str.slice(0,str.length-1)
+  }
+  
+
+</script>
+
+<script>
+
+  function send( name){
+    jsonp({
+      url: "http://localhost:9999/hello",
+      params:{
+        name, 
+        age: 1
+      }, 
+      key: 'callback', // 和服务端约定好回调的字段
+      callback: function(res){
+        console.log(res,'res');
+      }
+    })
+  }
+</script>
 </html>
