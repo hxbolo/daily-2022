@@ -11,6 +11,15 @@ function mynew() {
   obj.__proto__ = Con.prototype
   
   let res = Con.apply(obj, arguments)
-  return res instanceof Object ? res : res
+  return res instanceof Object ? res : obj
   
+}
+
+
+function my_new() {
+  let obj = {}
+  let Con = [].shift.call(arguments)
+  obj.__proto__ = Con.prototype
+  let res = Con.apply(obj, arguments)
+  return res instanceof Object ? res:obj
 }

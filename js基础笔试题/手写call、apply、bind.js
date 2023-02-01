@@ -16,6 +16,14 @@ Function.prototype.myCall = function (context, ...argument) {
 // let obj = {a:1}
 // console.log(add.myCall(obj, 1, 3));
 
+
+Function.prototype.Mycall = function (context,...arg) {
+  context.fn = this
+  let res = context.fn(...arg)
+  delete context.fn
+  return res
+}
+
 // ========================================
 
 

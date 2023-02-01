@@ -61,43 +61,61 @@ function clone2(target) {
 
 // 循环引用
 
-function deepClone(obj, map = new Map()) {
-  // if (typeof target === 'Object') {
-  //   // 初始化结果
-  //   let result = Array.isArray(target) ? [] : {}
-  //   if (map.get(tetarget)) {
-  //     return map.get(tetarget)
-  //   }
-  //   map.set(target, result);
+// function deepClone(obj, map = new Map()) {
+//   // if (typeof target === 'Object') {
+//   //   // 初始化结果
+//   //   let result = Array.isArray(target) ? [] : {}
+//   //   if (map.get(tetarget)) {
+//   //     return map.get(tetarget)
+//   //   }
+//   //   map.set(target, result);
 
-  //   for (let key in target) {
-  //     result[key] =  clone(target[key],map)
-  //   }
-  //   return result
-  // } else {
-  //   return target
-  // }
+//   //   for (let key in target) {
+//   //     result[key] =  clone(target[key],map)
+//   //   }
+//   //   return result
+//   // } else {
+//   //   return target
+//   // }
 
 
 
-  // 判读是不是基础类型
-  if (typeof obj !== 'Object') {
-    return obj
-  }
+//   // 判读是不是基础类型
+//   if (typeof obj !== 'Object') {
+//     return obj
+//   }
 
-  if (map.get(obj)){
-    return obj
-  }
-  // 初始化结果
-  let result = Array.isArray(obj) || Oject.prototype.toString.call(obj) === '[object,Array]' ? [] : {}
-  // 防止循环应用
-  map.set(obj, result)
-  for (let key in obj) {
-    // 调用递归
-    result[key] =  deepClone(obj[key], map)
-  }
-  return result
+//   if (map.get(obj)){
+//     return obj
+//   }
+//   // 初始化结果
+//   let result = Array.isArray(obj) || Object.prototype.toString.call(obj) === '[object,Array]' ? [] : {}
+//   // 防止循环应用
+//   map.set(obj, result)
+//   for (let key in obj) {
+//     // 调用递归
+//     result[key] =  deepClone(obj[key], map)
+//   }
+//   return result
   
+// }
+
+
+
+function deepClone(obj, map = new Map()) {
+  if (typeof obj !== 'object') {
+    return obj
+  }
+  if (map.get(obj)) {
+    return obj
+  }
+  let res = Array.isArray(obj) || Object.prototype.toString.call(obj) === '[object,Array]' ? [] : {}
+  // 防止循环调用
+  map.set(obj,res)
+  for (const key in obj) {
+    res[key] =  deepClone(obj[key],map)
+  }
+  return res
 }
 console.log(
 
