@@ -10,7 +10,7 @@
 //   return arr.slice();
 // }
 
-console.log(flat([1, 3, 4, 5, [44, 5, 5]]));
+// console.log(flat([1, 3, 4, 5, [44, 5, 5]]));
 
 
 function flat(arr, depth = 1) {
@@ -21,3 +21,14 @@ function flat(arr, depth = 1) {
   }
   return arr.slice()
 }
+
+
+// ===============
+function faltten(arr) {
+  return arr.reduce((pre, cur) => {
+    return pre.concat(Array.isArray(cur)? faltten(cur) : cur)
+  },[])
+}
+
+
+console.log(faltten([1, 3, 4, 5, [44, 5,[3,4,5], 5]]));
