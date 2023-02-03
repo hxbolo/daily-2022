@@ -22,8 +22,8 @@ function select(arr) {
   for (let i = 0; i < len - 1; i++){
     minIndex = i
     for (let j = i + 1; j < len; j++){
-      if (arr[j] < arr[minIndex]) {
-        minIndex = j
+      if (arr[j] < arr[minIndex]) { // 比对最小值
+        minIndex = j                // 将最小数的索引保存
       }
     }
     temp = arr[i]
