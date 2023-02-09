@@ -1,4 +1,4 @@
-const MyPromise = require('./my-promise');
+const MyPromise = require('./my-promise2');
 
 // let promise1 = new MyPromise((resolve, reject) => {
 //     // resolve('成功----')

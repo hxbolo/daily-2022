@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>图片加载优化</title>
+</head>
+
+<body>
+    <div style="background-color: green;width:100vw;height:8000px">
+    </div>
+    <div id="yellow" style="background-color: yellow;width:100vw;height:800px">
+    </div>
+
+    <script>
+
+      // 方法1 
+        // document.addEventListener('scroll', () => {
+        //     const clientH = document.documentElement.clientHeight//获取屏幕可视区域的高度
+        //     const scrollT = document.documentElement.scrollTop//获取浏览器窗口顶部与文档顶部之间的距离，也就是滚动条滚动的距离
+        //     const offsetTop = document.getElementById('yellow').offsetTop//获取元素相对于文档顶部的高度
+        //     if (clientH + scrollT > offsetTop) {
+        //         console.log('进入可视区域啦！！')
+        //     }
+        // })
+
+
+        // 方法2 
+        document.addEventListener('scroll', () => {
+            var bound = document.getElementById('yellow').getBoundingClientRect(); ////获取元素的大小及位置
+            var clientHeight = window.innerHeight;
+            if (bound.top <= clientHeight) {
+                console.log('进入可视区域啦')
+            }
+        })
+    </script>
+</body>
+
+</html>
