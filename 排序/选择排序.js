@@ -16,7 +16,7 @@ function selectionSort(arr) {
 } 
 
 
-function select(arr) {
+function select1(arr) {
   let len = arr.length
   let minIndex , temp
   for (let i = 0; i < len - 1; i++){
@@ -29,6 +29,22 @@ function select(arr) {
     temp = arr[i]
     arr[i] = arr[minIndex]
     arr[minIndex] = temp
+  }
+  return arr
+}
+
+function select(arr) {
+  let minIndex, template
+  for (let i = 0; i < arr.length - 1; i++){
+    minIndex = i
+    for (let j = i + 1; j < arr.length; j++){
+      if (arr[j] < arr[minIndex]) {
+        minIndex =j
+      }
+    }
+    temp = arr[i]
+    arr[i] = arr[minIndex]
+    arr[minIndex]=  temp
   }
   return arr
 }

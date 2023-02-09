@@ -117,6 +117,25 @@ function deepClone(obj, map = new Map()) {
   }
   return res
 }
+
+
+function deep(obj, map = new Map()) {
+  if (typeof obj != 'object') {
+    return obj
+  }
+
+  if (map.get(obj)) {
+    return obj
+  }
+  let res = Array.isArray(obj) || object.prototype.toString.call(obj) === '[object,Array]' ? []:{}
+  map.set(obj, res)
+  for (let key in obj) {
+    res[key] = deep(obj[key],map)
+  }
+  return res
+}
+
+
 console.log(
 
   deepClone(target1)
