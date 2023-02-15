@@ -56,6 +56,25 @@ function quicksort2(arr) {
   
 }
 
+
+function quicksort3(arr) {
+  if (arr.length <= 1) return arr
+  // 找基准
+  let provieIndex = Math.floor(arr.length / 2)
+  let provie = arr.splice(provieIndex, 1)[0]
+  let left = []
+  let right = []
+  for (let i = 0; i < arr.length; i++){
+    if (arr[i] < provie) {
+      left.push(arr[i])
+    } else {
+      right.push(arr[i])
+    }
+  }
+
+  return quicksort3(left).concat([provie], quicksort3(right))
+}
+
 const arr = [87, 63, 54, 3, 43, 23, 2, 5, 6, 4]
 
-console.log(quicksort2(arr));
+console.log(quicksort3(arr));
