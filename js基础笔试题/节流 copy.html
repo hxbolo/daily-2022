@@ -38,6 +38,21 @@
       }
     }
 
+
+    function throtte(func,wait){
+      var previout = 0
+      return function(){
+        var context = this 
+
+        var now = +new Date()
+        if(now - previout >wait){
+          func.apply(context,arguments)
+          previout = now
+        }
+
+      }
+    }
+
     container.onmousemove = throttle(getUserAction, 1000);
 
   </script>

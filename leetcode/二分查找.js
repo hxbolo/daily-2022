@@ -19,9 +19,30 @@ Array.prototype.binarySearch = function (item){
   }
   return -1;
 }
+
+
+Array.prototype.binarySearch1 = function (item) {
+  if (!this.length) return -1
+  // 二分查找需要先排序
+  this.sort((a, b) => a - b)
+  let start = 0 , end = this.length - 1
+  while (start <= end) {
+    let mid = Math.floor((start + end) / 2)
+    let result = this[mid]
+    if (item > result) {
+      start = mid + 1
+    } else if (item < result) {
+      end = mid -1
+    } else {
+      return mid
+    }
+
+  }
+  return -1
+}
 var arr = [1, 3, 43, 54, 64, 74, 474, 833, 853, 864, 954]
 
 console.log(
 
-  arr.binarySearch(64)
+  arr.binarySearch1(64)
 );

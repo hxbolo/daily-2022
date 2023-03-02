@@ -31,4 +31,12 @@ function faltten(arr) {
 }
 
 
-console.log(faltten([1, 3, 4, 5, [44, 5,[3,4,5], 5]]));
+function faltten1(arr) {
+  return arr.reduce((pre, cur) => {
+    return pre.concat(Array.isArray(cur)? faltten1(cur):cur)
+  },[])
+  
+}
+
+
+console.log(faltten1([1, 3, 4, 5, [44, 5, [3, 4, 5], 5]]));
