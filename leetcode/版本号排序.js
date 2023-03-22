@@ -3,7 +3,7 @@
 // 输出： ['10.2.1', '5.1.2', '2.1.0.1', '1.0.4.5', '0.402.1']
 let arr =  ['2.1.0.1', '0.402.1', '10.2.1', '5.1.2', '1.0.4.5']
 function versionSort(arr) { 
- return arr.sort((a, b) => {
+return arr.sort((a, b) => {
     // console.log('a =>',a);
     // console.log('b =>', b);
     let i = 0;

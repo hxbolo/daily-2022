@@ -123,6 +123,6 @@ function listToTree2(data) {
 
 }
 
-let tree = listToTree2(data)
+let tree = listToTree2(data, [], 0)
 console.log('tree===>',tree);
 
