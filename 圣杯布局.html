@@ -36,6 +36,33 @@
   display: table;
   clear: both;
 }
+.box{
+  position: relative;
+  margin-top: 40px;
+  width: 400px;
+  height: 600px;
+  background-color: #dcd;
+}
+.aaa{
+  width: 200px;
+  height: 200px;
+  background-color: #cdc;
+  position: absolute;
+  top:10px;
+}
+
+.result-a:before {
+    content: '当前浏览器不支持selector()语法';
+    color: red;
+    padding: 5px;
+    border: solid;
+}
+
+@supports(top:top){
+  .top{
+    top: 300px;
+  }
+}
 </style>
 <body>
 
@@ -44,7 +71,12 @@
     <p class="left">我是左边</p>
     <p class="right">我是右边</p>
   </div>
+
   
+
+  <div class="box">
+    <div class="aaa">22222</div>
+  </div>
   
 </body>
 </html>

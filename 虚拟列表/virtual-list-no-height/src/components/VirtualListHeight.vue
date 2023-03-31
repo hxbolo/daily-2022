@@ -1,5 +1,6 @@
 <template>
   <div ref="list" :style="{height}" class="infinite-list-container" @scroll="scrollEvent($event)">
+    <!--  -->
     <div ref="phantom" class="infinite-list-phantom"></div>
     <div ref="content" class="infinite-list">
       <div class="infinite-list-item" ref="items" :id="item._index" :key="item._index" v-for="item in visibleData">
@@ -139,6 +140,7 @@ export default {
       console.log('nodes',nodes);
       nodes.forEach((node)=>{
         let rect = node.getBoundingClientRect();
+
         console.log(rect);
         let height = rect.height;
         let index = +node.id.slice(1)

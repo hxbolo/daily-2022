@@ -96,18 +96,27 @@ const useEdit=(todos) =>{
   }
 }
 
-// 切换代办完成状态
-const useFilter =  todos =>{
-  const allDone=  computed(({
-    get()
-  })
-}
+// // 切换代办完成状态
+// const useFilter =  todos =>{
+//   const allDone=  computed(({
+//     // get()、
+//   })
+// }
+
 
 export default {
   name: 'App',
   setup() {
     const todos = ref([])
     const {remove} =  useRemove(todos)
+
+    const books = reactive([ref('Vue 3 Guide')])
+    // 这里需要 .value
+    console.log(books)
+
+    const map = reactive(new Map([['count', ref(0)]]))
+    // 这里需要 .value
+    console.log(map.get('count').value)
     return {
       remove,
       todos,
