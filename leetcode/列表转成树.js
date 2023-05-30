@@ -123,6 +123,27 @@ function listToTree2(data) {
 
 }
 
-let tree = listToTree2(data, [], 0)
+
+function listToTree3(data){
+  let map = {}
+  let treeData = []
+  for(let i = 0; i<data.length; i++){
+    map[data[i].id] = data[i]
+  }
+
+  for(let i in map){
+    if(map[i].parentId){
+      if(!map[map[i].parentId].children){
+        map[map[i].parentId].children = []
+      }
+      map[map[i].parentId].children.push(map[i])
+    }else{
+      treeData.push(map[i])
+    }
+  }
+  return treeData
+}
+
+let tree = listToTree3(data, [], 0)
 console.log('tree===>',tree);
 
