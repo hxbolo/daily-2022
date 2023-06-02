@@ -27,4 +27,4 @@ var deleteDuplicates = function(head) {
 
 };
 
-console.log(deleteDuplicates([1,1,2]));
+console.log(deleteDuplicates([1,3,3,6,7,7,7]));
