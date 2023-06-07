@@ -15,8 +15,8 @@ class Vue {
   _propxyData(data) {
     Object.keys(data).forEach(key => {
       Object.defineProperty(this, key, {
-        enumerable: true,
-        configurable: true,
+        enumerable: true, // 可枚举
+        configurable: true, // 可遍历
         get() {
           return data[key]
         },
