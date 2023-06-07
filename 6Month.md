@@ -32,7 +32,42 @@
     ```
 
   ## 原型原型链
+    1. __proto__、 constructor属性是对象所独有的；
+    2. prototype属性是函数独有的；
+    3. 上面说过js中函数也是对象的一种，那么函数同样也有属性__proto__、 constructor；
+    ```js
+      function Person(name, age){ 
+        this.name = name;
+        this.age = age;
+      }
+
+      Person.prototype.motherland = 'China'
+
+      let person01 = new Person('小明', 18)
+
+      Person.prototype.constructor == Person // **准则1：原型对象（即Person.prototype）的constructor指向构造函数本身**
+      person01.__proto__ == Person.prototype // **准则2：实例（即person01）的__proto__和原型对象指向同一个地方**
+
+      console.log(Person.prototype.constructor == Person);
+      console.log(person01.__proto__ == Person.prototype);
+    ```
   ## 作用域作用域链
+    ### 什么是作用域
+        - 作用域是在运行时代码中的某些特定部分中变量，函数和对象的可访问性 (作用域最大的用处就是隔离变量，不同作用域下同名变量不会有冲突。)
+      1. 全局作用域和函数作用域
+        - 最外层函数 和在最外层函数外面定义的变量拥有全局作用域
+        - 所有末定义直接赋值的变量自动声明为拥有全局作用域
+        - 所有window对象的属性拥有全局作用域
+        - 函数作用域,是指声明在函数内部的变量，和全局作用域相反，局部作用域一般只在固定的代码片段内可访问到，最常见的例如函数内部。
+      2.  块级作用域 
+        - 块级作用域可通过新增命令let和const声明，所声明的变量在指定块的作用域外无法被访问
+        - 在一个函数内部
+        - 在一个代码块（由一对花括号包裹）内部
+        - 声明变量不会提升到代码块顶部
+        - 禁止重复声明
+    ### 什么是作用域链
+      - 再一层一层向上寻找，直到找到全局作用域还是没找到，就宣布放弃。这种一层一层的关系，就是 作用域链 。
+    ### 总结：执行上下文在运行时确定，随时可能改变；作用域在定义时就确定，并且不会改变。！
   ## 执行上下文
   ## 闭包
   ## call apply bind
