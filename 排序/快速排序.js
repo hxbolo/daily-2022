@@ -8,7 +8,7 @@ function quicksort(arr) {
   var left = []
   var right = []
   // 小于"基准"的元素放入左边的子集，大于基准的元素放入右边的子集
-  for (var i = 0; i < arr.length; i++){
+  for (var i = 0; i < arr.length; i++) {
     if (arr[i] < pivot) {
       left.push(arr[i])
     } else {
@@ -22,12 +22,14 @@ function quicksort(arr) {
 
 function quicksort1(arr) {
   // 找基准
-  if (arr.length <= 1) { return arr }
-  var pivotIndex = Math.floor(arr.length / 2) 
-  var pivot = arr.splice(pivotIndex,1)[0]
-  var left  = []
+  if (arr.length <= 1) {
+    return arr
+  }
+  var pivotIndex = Math.floor(arr.length / 2)
+  var pivot = arr.splice(pivotIndex, 1)[0]
+  var left = []
   var right = []
-  for (let i = 0; i < arr.length; i++){
+  for (let i = 0; i < arr.length; i++) {
     if (arr[i] < pivot) {
       left.push(arr[i])
     } else {
@@ -44,16 +46,16 @@ function quicksort2(arr) {
   var pivotIndex = Math.floor(arr.length / 2)
   var provide = arr.splice(pivotIndex, 1)[0]
   var left = []
-  var reight =  []
-  for (let i = 0; i < arr.length; i++){
+  var reight = []
+  for (let i = 0; i < arr.length; i++) {
     if (arr[i] < provide) {
       left.push(arr[i])
     } else {
       reight.push(arr[i])
     }
   }
-  return quicksort2(left).concat([provide],quicksort2(reight))
-  
+  return quicksort2(left).concat([provide], quicksort2(reight))
+
 }
 
 
@@ -64,7 +66,7 @@ function quicksort3(arr) {
   let provie = arr.splice(provieIndex, 1)[0]
   let left = []
   let right = []
-  for (let i = 0; i < arr.length; i++){
+  for (let i = 0; i < arr.length; i++) {
     if (arr[i] < provie) {
       left.push(arr[i])
     } else {
@@ -75,6 +77,41 @@ function quicksort3(arr) {
   return quicksort3(left).concat([provie], quicksort3(right))
 }
 
+function quicksort4(arr) {
+  if (arr.length <= 1) return arr
+  // 找基准下标
+  let provideIndex = Math.floor(arr.length / 2)
+  // 找基准下的值
+  let provide = arr[provideIndex]
+  let left = []
+  let right = []
+  for (let i = 0; i < arr.length; i++) {
+    if (arr[i] < provide) {
+      left.push(arr[i])
+    } else {
+      right.push(arr[i])
+    }
+  }
+  return quicksort4(left).concat([provide], quicksort4(right))
+}
+function quicksort4(arr) {
+  if (arr.length <= 1) return arr
+  // 找基准下标
+  let provideIndex = Math.floor(arr.length / 2)
+  // 找基准下的值
+  let provide = arr.splice(provideIndex, 1)[0]
+  let left = []
+  let right = []
+  for (let i = 0; i < arr.length; i++) {
+    if (arr[i] < provide) {
+      left.push(arr[i])
+    } else {
+      right.push(arr[i])
+    }
+  }
+  return quicksort4(left).concat([provide], quicksort4(right))
+}
+
 const arr = [87, 63, 54, 3, 43, 23, 2, 5, 6, 4]
 
-console.log(quicksort3(arr));
+console.log(quicksort4(arr));

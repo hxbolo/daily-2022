@@ -10,6 +10,7 @@ class Observer {
     if (!data || typeof data !== 'object') return
     // 遍历所有对象的成员
     Object.keys(data).forEach(key => {
+
       this.defineReactive(data,key,data[key])
     })
   }
@@ -32,6 +33,7 @@ class Observer {
       set(newVal) {
         if (newVal === val) return
         val = newVal
+        // 给msg重新赋值之后调用walk ， 把他转换成getter 和 setter
         // 如果 newValue 是对象，设置 newValue 的成员为响应式
         that.walk(newVal)
         // 发送通知

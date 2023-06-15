@@ -7,6 +7,7 @@ class Compiler {
   }
   // 编译模板，处理文本节点和元素节点
   compile(el) {
+    // 子节点
     let childNodes = el.childNodes
     // console.log(childNodes,'childNodes');
     Array.from(childNodes).forEach(node => {
