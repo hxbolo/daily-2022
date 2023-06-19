@@ -283,6 +283,51 @@
   - 强制缓存的优先级高于协商缓存
 
 # VUE
+
+### vue-router原理
+  1. hash模式  http://localhost:8080/index.html#/book?bookid=1
+    - 改变描点
+      可以通过location.hash = "/hashpath"的方式修改浏览器的hash值。
+    - 监听描点变化
+      可以通过监听hashchange事件监听hash值的变化。
+      ```js
+      window.addEventListener('hashchange', () => {
+        const hash = window.location.hash.substr(1)
+        // 根据hash值渲染不同的dom
+      })
+      ```
+    
+  2. history模式
+    - 改变url 
+      H5的history对象提供了pushState和replaceState两个方法，当调用这两个方法的时候，url会发生变化，浏览器访问历史也会发生变化，但是浏览器不会向后台发送请求。
+      ```js
+        // 第一个参数：data对象，在监听变化的事件中能够获取到
+        // 第二个参数：title标题
+        // 第三个参数：跳转地址
+        history.pushState({}, "", '/a')
+      ```
+    - 监听url变化
+      可以通过监听popstate事件监听history变化，也就是点击浏览器的前进或者后退功能时触发。
+      ```js
+        window.addEventListener("popstate", () => {
+            const path = window.location.pathname
+            // 根据path不同可渲染不同的dom
+        })
+      ```
+
+  总结：
+  1. hash模式下：
+    - 通过location.hash修改hash值，触发更新。
+    - 通过监听hashchange事件监听浏览器前进或者后退，触发更新。
+
+  2. history模式下：
+    - 通过history.pushState修改浏览器地址，触发更新。
+    - 通过监听popstate事件监听浏览器前进或者后退，触发更新。
+
+  3. 如何渲染router-view组件
+    - 通过Vue.observable在router实例上创建一个保存当前路由的监控对象current。
+    - 当浏览器地址变化的时候，修改监控对象current。
+    - 在router-view组件中监听监控对象current的变化，当current变化后，获取用户注册的相应component，并利用h函数将component渲染成vnodes，进而更新页面视图。
 ### vue理解
   - 一个渐进式框架
   - 数据驱动
@@ -524,6 +569,15 @@
     - JavaScript：UglifyPlugin
     - CSS ：MiniCssExtractPlugin
     - HTML：HtmlWebpackPlugin 
+
+  ### 图片优化
+  1. 图片压缩
+  2. 图片分割：将超大图片分割成小图进行加载， 可以避免一次性加载整个图片，从而加快加载速度。这种方式需要在前端实现图片拼接，需要确保拼接后的图片无缝衔接
+  3. cnd加速： 使用cdn可以将图片缓存在离用户更近的节点上，从而加速图片加载速度。如果需要加载的图片是静态资源，可以将其存储在 CDN 上，以便快速访问。
+  4. 懒加载： 懒加载是一种图片延迟加载的方式，即当用户浏览到需要加载的图片时才进行加载，可以有效避免一次性加载大量图片而导致页面加载速度缓慢。
+  5. WebP 格式：使用 WebP 格式可以将图片大小减小到 JPEG 和 PNG 的一半以下，从而加快图片加载速度。
+  6. http2.0:  HTTP/2：使用 HTTP/2 协议可以并行加载多个图片，从而加快页面加载速度。
+  7. 预加载：预加载是在页面加载完毕后，提前加载下一步所需要的资源。在图片加载方面，可以在页面加载完毕后提前加载下一个需要显示的图片，以便用户快速浏览。 
 # uniapp & 小程序
 # 常见手写
   ### 去重
