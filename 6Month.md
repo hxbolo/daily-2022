@@ -270,10 +270,61 @@
       - max-age=t：缓存内容将在t秒后失效 
       - no-cache：需要使用协商缓存来验证缓存数据 
       - no-store：所有内容都不会缓存。
+      ```js
+        // 使用 XMLHttpRequest 设置请求头
+        var xhr = new XMLHttpRequest();
+        xhr.open('GET', '/api/resource');
+        xhr.setRequestHeader('Cache-Control', 'max-age=3600');
+        xhr.send();
+
+        // 使用 fetch API 设置请求头
+        fetch('/api/resource', {
+          headers: {
+            'Cache-Control': 'max-age=3600'
+          }
+        });
+
+         // 使用 fetch API 设置请求头
+          fetch('https://example.com/api/resource', {
+            method: 'GET',
+            headers: {
+              'If-Modified-Since': 'Sat, 01 Jan 2022 00:00:00 GMT',
+              'If-None-Match': '123456789'
+            }
+          })
+          .then(function(response) {
+            if (response.status === 200) {
+              // 请求成功，处理响应
+              return response.text();
+            } else if (response.status === 304) {
+              // 资源未发生变化，使用缓存数据
+            } else {
+              // 请求失败，处理错误
+              throw new Error(response.status);
+            }
+          })
+          .then(function(data) {
+            console.log(data);
+          })
+          .catch(function(error) {
+            console.error(error);
+          });
+
+      ```
   - 协商缓存： 客户端会先从缓存数据库中获取到一个缓存数据的标识，得到标识后请求服务端验证是否失效（新鲜），如果没有失效服务端会返回304，此时客户端直接从缓存中获取所请求的数据，如果标识失效，服务端会返回更新后的数据
     - Last-Modified： 服务器在响应请求时，会告诉浏览器资源的最后修改时间
     - Etag： 服务器响应请求时，通过此字段告诉浏览器当前资源在服务器生成的唯一标
       - If-None-Match： 再次请求服务器时，浏览器的请求报文头部会包含此字段，后面的值为在缓存中获取的标识。服务器接收到次报文后发现If-None-Match则与被请求资源的唯一标识进行对比。
+
+    ```js
+      // 使用 XMLHttpRequest：
+
+      // 设置 If-Modified-Since 字段
+      xhr.setRequestHeader('If-Modified-Since', 'Sat, 01 Jan 2022 00:00:00 GMT');
+
+      // 设置 If-None-Match 字段
+      xhr.setRequestHeader('If-None-Match', '123456789');
+    ```
 
   - 优点
     1. 减少了冗余的数据传递，节省宽带流量
@@ -546,6 +597,7 @@
       }, [])
     ```
 # 排序
+
   排序: [https://github.com/hustcc/JS-Sorting-Algorithm](https://github.com/hustcc/JS-Sorting-Algorithm)
   在线阅读地址：[https://sort.hust.cc/](https://sort.hust.cc/)
   ### 1.冒泡排序
@@ -625,3 +677,84 @@
       return arr
     }
   ```
+
+
+# 错误上报 搜集页面错误，进行上报，然后对症分析
+https://juejin.cn/post/6987681953424080926
+
+  ```js
+      // 常见捕获方式：
+    // 浏览器端
+    window.onerror // 全局异常捕获
+    window.addEventListener('error') // js错误、资源加载错误
+    window.addEventListener('unhandledrejection') // 没有catch的Promise错误
+
+    // node端
+    process.on('uncaughtException') // 全局异常捕获
+    process.on('unhandledRejection') // 没有catch的Promise错误
+
+    // 异步异常捕获
+    /**
+     * 重写原生、三方库相关方法：
+     * 1.setTimeout / setInterval
+     * 2.fetch
+     * 3.XMLHttpRequest
+     */
+    const originalSetTimeout = window.setTimeout;
+    window.setTimeout = (fn, time) => {
+        const wrap = () => {
+            try {
+                fn()
+            } catch (e) {
+                // do something
+            }
+        }
+        return originalSetTimeout(wrap, time);
+    }
+
+    // 利用框架、三方库本身能力
+    /**
+     * 重写原生、三方库相关方法：
+     * 1.Vue.config.errorHandler
+     * 2.React ErrorBoundary
+     */
+    class ErrorBoundary extends React.Component {
+        static getDerivedStateFromError(error) {
+            return { hasError: true };
+        }
+
+        componentDidCatch(error, errorInfo) {
+            logErrorToMyService(error, errorInfo);
+        }
+
+        render() {
+            if(this.state.hasError) {
+                return <h1>Something went wrong.</h1>
+            }
+            return this.props.children;
+        }
+    }
+
+  ```
+
+### sentry 和 SourceMap  之间的使用
+  https://www.jianshu.com/p/66e00077fac3
+  Sentry和SourceMap是两个常用于前端错误监控和调试的工具，它们可以结合使用来更好地追踪和解决前端代码中的错误。
+
+  Sentry是一款开源的错误监控平台，可以帮助开发人员捕获和报告前端和后端的错误。它提供了丰富的错误信息和堆栈跟踪，能够帮助开发人员快速定位和修复问题。Sentry还支持集成到多种前端框架和工具中，如Vue、React、Angular等，以便更好地捕获和处理错误。
+
+  SourceMap是一种用于将编译后的代码映射回原始源代码的文件。在前端开发中，为了提高性能和加载速度，通常会将JavaScript、CSS等代码进行压缩和合并。这样会导致在出现错误时难以定位到源代码中的具体位置。SourceMap的作用就是提供了一个映射关系，将压缩后的代码位置映射回源代码中的位置，从而方便调试和错误追踪。
+
+  结合使用Sentry和SourceMap，可以实现以下步骤：
+
+  1. 生成SourceMap文件：在构建过程中生成对应的SourceMap文件，通常是在压缩和合并代码的过程中生成。
+
+  2. 部署SourceMap文件：将生成的SourceMap文件部署到服务器上，确保它可以被访问到。
+
+  3. 配置Sentry：在Sentry中创建项目并获取对应的DSN（Data Source Name）。
+
+  4. 集成Sentry和SourceMap：将Sentry的客户端SDK集成到前端应用中，并配置相关参数，包括DSN和SourceMap的URL。
+
+  5. 错误监控和调试：当前端应用出现错误时，Sentry会捕获错误信息，并根据SourceMap映射将错误定位到源代码的位置。开发人员可以在Sentry的控制台中查看错误报告，包括错误信息、堆栈跟踪和源代码位置。
+
+  通过使用Sentry和SourceMap的组合，开发人员可以更快速地定位和解决前端代码中的错误，提高应用的质量和稳定性。
