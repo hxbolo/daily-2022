@@ -40,3 +40,19 @@ function faltten1(arr) {
 
 
 console.log(faltten1([1, 3, 4, 5, [44, 5, [3, 4, 5], 5]]));
+
+
+function getTargetAndRest(target, originList) {
+  let targetArr = [];
+  for (let i = 0; i < originList.length; i++) {
+    if (originList[i] === target) {
+      targetArr = originList.splice(i, 1);
+      break;
+    }
+  }
+  console.log(targetArr.concat(originList));
+  return targetArr.concat(originList);
+}
+ 
+const list = [1, 2, 3, 4, 5];
+let [a, ...c] = getTargetAndRest(3, list);

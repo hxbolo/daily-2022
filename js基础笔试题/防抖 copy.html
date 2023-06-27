@@ -14,6 +14,29 @@
 <body>
   <div id="container"></div>
   <script>
+
+function onceCache(fn) {
+  debugger
+  let toggle = false,
+    ret = null;
+  return function () {
+    if (toggle) return ret;
+    toggle = true;
+    return (ret = fn.apply(this, arguments));
+  };
+}
+
+const f = (x) => x;
+const onceF = onceCache(f);
+
+console.log(
+
+  onceF(3)
+);
+console.log(
+
+  onceF(4)
+);
     var count = 1;
     var container = document.getElementById('container');
 
