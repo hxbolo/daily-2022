@@ -1,0 +1,9 @@
+@import url(rest.css);
+
+body{
+  min-height: 100vh;
+ background-color: #dcc;
+  /* margin: 0 auto; */
+  background-image: url(icon2.png);
+  background-size: cover;
+}
