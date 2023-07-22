@@ -1,15 +1,21 @@
-#  HTML&CSS
-#  JS
-  ## 数据类型
-   - typeof: 判断类型 Number, String, Boolean, Uundefined， Object, Function, Symbol
-   - instanceof  s instanceof String
-   - Object.prototype.toString.call()： 能准确的判断出数据类型
+# HTML&CSS
 
-   - 总结
-    1. typeof 来判断基本数据类型是 ok 的，不过需要注意当用 typeof 来判断 null 类型时的问题，
-      2. 如果想要判断一个对象的具体类型可以考虑用 instanceof，但是 instanceof 也可能判断不准确，比如一个数组，他可以被 instanceof 判断为 Object。
-    3. 准确的判断对象实例的类型时，可以采取 Object.prototype.toString.call 方法。
-  ## instanceof 实现原理
+# JS
+
+## 数据类型
+
+- typeof: 判断类型 Number, String, Boolean, Uundefined， Object, Function, Symbol
+- instanceof s instanceof String
+- Object.prototype.toString.call()： 能准确的判断出数据类型
+
+- 总结
+
+  1. typeof 来判断基本数据类型是 ok 的，不过需要注意当用 typeof 来判断 null 类型时的问题，
+  2. 如果想要判断一个对象的具体类型可以考虑用 instanceof，但是 instanceof 也可能判断不准确，比如一个数组，他可以被 instanceof 判断为 Object。
+  3. 准确的判断对象实例的类型时，可以采取 Object.prototype.toString.call 方法。
+
+## instanceof 实现原理
+
     - instanceof 来判断对象的具体类型，其实 instanceof 主要的作用就是判断一个实例是否属于某种类型
     - instanceof 也可以判断一个实例是否是其父类型或者祖先类型的实例。
     **instanceof 主要的实现原理就是只要右边变量的 prototype 在左边变量的原型链上即可**。因此，instanceof 在查找的过程中会遍历左边变量的原型链，直到找到右边变量的 prototype，如果查找失败，则会返回 false，告诉我们左边变量并非是右边变量的实例。
@@ -31,12 +37,13 @@
       console.log( newInstanceOf([], Object));
     ```
 
-  ## 原型原型链
+## 原型原型链
+
     1. __proto__、 constructor属性是对象所独有的；
     2. prototype属性是函数独有的；
     3. 上面说过js中函数也是对象的一种，那么函数同样也有属性__proto__、 constructor；
     ```js
-      function Person(name, age){ 
+      function Person(name, age){
         this.name = name;
         this.age = age;
       }
@@ -51,7 +58,9 @@
       console.log(Person.prototype.constructor == Person);
       console.log(person01.__proto__ == Person.prototype);
     ```
-  ## 作用域作用域链
+
+## 作用域作用域链
+
     ### 什么是作用域
         - 作用域是在运行时代码中的某些特定部分中变量，函数和对象的可访问性 (作用域最大的用处就是隔离变量，不同作用域下同名变量不会有冲突。)
       1. 全局作用域和函数作用域
@@ -59,7 +68,7 @@
         - 所有末定义直接赋值的变量自动声明为拥有全局作用域
         - 所有window对象的属性拥有全局作用域
         - 函数作用域,是指声明在函数内部的变量，和全局作用域相反，局部作用域一般只在固定的代码片段内可访问到，最常见的例如函数内部。
-      2.  块级作用域 
+      2.  块级作用域
         - 块级作用域可通过新增命令let和const声明，所声明的变量在指定块的作用域外无法被访问
         - 在一个函数内部
         - 在一个代码块（由一对花括号包裹）内部
@@ -68,17 +77,23 @@
     ### 什么是作用域链
       - 再一层一层向上寻找，直到找到全局作用域还是没找到，就宣布放弃。这种一层一层的关系，就是 作用域链 。
     ### 总结：执行上下文在运行时确定，随时可能改变；作用域在定义时就确定，并且不会改变。！
-  ## 执行上下文
+
+## 执行上下文
+
     1. 全局执行上下文： 这是默认的、最基础的执行上下文。不在任何函数中的代码都位于全局执行上下文中。它做了两件事：
       -  创建一个全局对象，在浏览器中这个全局对象就是 window 对象。
       - 将 this 指针指向这个全局对象。一个程序中只能存在一个全局执行上下文。
     2. 函数执行上下文： 每次调用函数时，都会为该函数创建一个新的执行上下文。每个函数都拥有自己的执行上下文，但是只有在函数被调用的时候才会被创建。一个程序中可以存在任意数量的函数执行上下文。每当一个新的执行上下文被创建，它都会按照特定的顺序执行一系列步骤，具体过程将在本文后面讨论。
     3. Eval 函数执行上下文： 运行在 eval 函数中的代码也获得了自己的执行上下文，但由于 Javascript 开发人员不常用 eval 函数，所以在这里不再讨论。
 
-  ## 闭包
-  ## call apply bind
-  ## new
-  ## 异步 js是单线程，为啥可以高并发(如何可以请求异步)
+## 闭包
+
+## call apply bind
+
+## new
+
+## 异步 js 是单线程，为啥可以高并发(如何可以请求异步)
+
     1. 异步编程模型：JavaScript 通过使用回调函数、Promise、async/await 等机制实现了异步编程模型。这使得在执行耗时操作时，可以将任务交给其他线程或进程处理，JavaScript 主线程可以继续执行其他任务，从而提高并发性能。
 
     2. 非阻塞 I/O：JavaScript 在浏览器环境中运行时，可以利用浏览器提供的异步 API（如 Ajax 请求、定时器、事件处理等）来实现非阻塞 I/O 操作。这样，当一个异步操作进行时，JavaScript 主线程不会被阻塞，可以继续处理其他任务，从而提高并发性能。
@@ -105,10 +120,12 @@
 
       6. 宏任务与微任务的顺序：每次执行一个宏任务后，都会先执行完当前宏任务中的所有微任务，然后再执行下一个宏任务。
 
+## 浏览器回收机制
 
-  ## 浏览器回收机制
-  ## 实现发布订阅模式
-  ## promise
+## 实现发布订阅模式
+
+## promise
+
     - promise 就是一个类， 在执行这个类的时候， 需要传递一个执行器进去 执行器会立即执行
     - promise 有三个不同的状态，  成功 失败 等待  一旦状态改变就无法修改
     - resolve 和reject 函数是用来改变状态
@@ -116,14 +133,16 @@
     - 同一个promise对象下面的then方法是可以被调用多次的
     - then方法是可以被链式调用的, 后面then方法的回调函数拿到值的是上一个then方法的回调函数的返回值
 
-    - promise.all  接收一个数组作为参数， 接收的参数的顺序，是返回结果值的顺序， 返回的是一个promise对象  在all 方法中如果方法都是成功了，返回就是成功的值， 如果有一个失败的值， 那他就是失败的返回  
-  ### 浏览器输入url 
+    - promise.all  接收一个数组作为参数， 接收的参数的顺序，是返回结果值的顺序， 返回的是一个promise对象  在all 方法中如果方法都是成功了，返回就是成功的值， 如果有一个失败的值， 那他就是失败的返回
+
+### 浏览器输入 url
+
     1. DNS域名解析
     2. 建立TCP连接
       - 建立3次握手
     3. 发送HTTP请求，服务器处理请求，返回响应结果
       - 如果头部有缓存相关信息 ，会验证缓存是否有效若有效则返回状态码为304，若无效则重新返回资源，状态码为200.
-    4. 关闭TCP连接 
+    4. 关闭TCP连接
       - 四次分手
     5. 浏览器渲染
       - 将html 转换成DOM树
@@ -168,7 +187,8 @@
           4. 每个节点开始布局，计算位置大小，
           5. 把每个节点渲染到页面肿
 
-  ## 浏览器渲染
+## 浏览器渲染
+
     浏览器渲染原理及流程(https://blog.csdn.net/sjhcake/article/details/123856054)
 
     ### 渲染主要步骤
@@ -176,21 +196,28 @@
       2. 构建Render树 - 接下来不管是内联式，外联式还是嵌入式引入的CSS样式会被解析生成CSSOM树，根据DOM树与CSSOM树生成另外一棵用于渲染的树-渲染树(Render tree)，
       3. 布局Render树 - 然后对渲染树的每个节点进行布局处理，确定其在屏幕上的显示位置
       4. 绘制Render树 - 最后遍历渲染树并用UI后端层将每一个节点绘制出来
-# web存储
-  - cookie 
-  1. 4kb左右， 主要用于保存登录信息
-  2. 生命周期： 一个会话周期， 可以设置他是时效
-  3. 每次都会携带在HTTP头中，如果使用cookie保存过多数据会带来性能问题
-  - localStorage
-    1. 一般为5M 
-    2. 永久存储， 除非被清除
-    3. 仅在客户端（即浏览器）中保存，不参与和服务器的通信
-  - sessionStorage
-    1. 一般为5M 
-    2. 当前会话有效， 关闭浏览器后被清除
-    3. 仅在客户端（即浏览器）中保存，不参与和服务器的通信
+
+# web 存储
+
+- cookie
+
+1. 4kb 左右， 主要用于保存登录信息
+2. 生命周期： 一个会话周期， 可以设置他是时效
+3. 每次都会携带在 HTTP 头中，如果使用 cookie 保存过多数据会带来性能问题
+
+- localStorage
+  1. 一般为 5M
+  2. 永久存储， 除非被清除
+  3. 仅在客户端（即浏览器）中保存，不参与和服务器的通信
+- sessionStorage
+  1. 一般为 5M
+  2. 当前会话有效， 关闭浏览器后被清除
+  3. 仅在客户端（即浏览器）中保存，不参与和服务器的通信
+
 # HTTP
-  ### http 1.0 、1.1、 2.0 发展史
+
+### http 1.0 、1.1、 2.0 发展史
+
     1. 连接复用性:
       - HTTP/1.0: 每个请求和响应都需要建立一个新的TCP连接，导致性能较低。
       - HTTP/1.1: 引入了持久连接（Keep-Alive），允许在单个TCP连接上传输多个请求和响应，提高了性能。
@@ -216,18 +243,18 @@
 
 
     1. 连接复用性
-      - 1.0 每个请求和响应都需要建立一个新的tcp链接， 
+      - 1.0 每个请求和响应都需要建立一个新的tcp链接，
       - 1.1 引入长链接，允许单个tcp链接上传输有多个请求和响应
       - 2.0 支持多路复用， 允许单个tcp 链接上同时传输多个请求和响应
 
     2. 请求和响应
       - 1.0 请求和响应按顺序处理
       - 1.1 、2.0 支持管道化， 允许在一个tcp链接上同时发送多个请求和响应
-    
+
     3. 二进制传输
       - 1.0 、1.1 使用文本格式传输
       - 2.0 引入二进制传输， 将http消息分解成二进制帧进行传输
-    
+
     4. 头部压缩
       - 1.0 、 1.1 每个请求响应header信息重复传输
       - 2.0 头部压缩，减少header 信息传输大小
@@ -252,138 +279,156 @@
       6. 请求头中引入了 range 字段，支持断点续传
       7. 允许响应数据分块（chunked），利于传输大文件
       8. 强制要求 Host 头，让互联网主机托管称为可能
-    - 2.0 
+    - 2.0
       1. 二进制协议： HTTP/1.1版本的头部信息是文本，数据部分可以是文本也可以是二进制。HTTP/2版本的头部和数据部分都是二进制，且统称为‘帧’
       2. 多路复用： 废弃了 HTTP/1.1 中的管道，同一个TCP连接里面，客户端和服务器可以同时发送多个请求和多个响应，并且不用按照顺序来。由于服务器不用按顺序来处理响应，所以避免了“对头堵塞”的问题。
       3. 头部信息压缩： 使用专用算法压缩头部，减少数据传输量，主要是通过服务端和客户端同时维护一张头部信息表，所有的头部信息在表里面都会有对应的记录，并且会有一个索引号，这样后面只需要发送索引号即可
       4. 服务端主动推送： 允许服务器主动向客户推送数据
       5. 数据流： 由于HTTP/2版本的数据包不是按照顺序发送的，同一个TCP连接里面相连的两个数据包可能是属于不同的响应，因此，必须要有一种方法来区分每一个数据包属于哪个响应。HTTP/2版本中，每个请求或者响应的所有数据包，称为一个数据流（stream）
 
-  ### http 缓存
-  - 强缓存 ：当缓存数据库中已有所请求的数据时。客户端直接从缓存数据库中获取数据。当缓存数据库中没有所请求的数据时，客户端的才会从服务端获取数据。
-    1. Expires
-      - Exprires的值为服务端返回的数据到期时间。当再次请求时的请求时间小于返回的此时间，则直接使用缓存数据。
-      
-    2. Cache-Control。
-      - private：客户端可以缓存 
-      - public：客户端和代理服务器都可以缓存 
-      - max-age=t：缓存内容将在t秒后失效 
-      - no-cache：需要使用协商缓存来验证缓存数据 
-      - no-store：所有内容都不会缓存。
-      ```js
-        // 使用 XMLHttpRequest 设置请求头
-        var xhr = new XMLHttpRequest();
-        xhr.open('GET', '/api/resource');
-        xhr.setRequestHeader('Cache-Control', 'max-age=3600');
-        xhr.send();
+### http 缓存
 
-        // 使用 fetch API 设置请求头
-        fetch('/api/resource', {
-          headers: {
-            'Cache-Control': 'max-age=3600'
-          }
-        });
+- 强缓存 ：当缓存数据库中已有所请求的数据时。客户端直接从缓存数据库中获取数据。当缓存数据库中没有所请求的数据时，客户端的才会从服务端获取数据。
 
-         // 使用 fetch API 设置请求头
-          fetch('https://example.com/api/resource', {
-            method: 'GET',
-            headers: {
-              'If-Modified-Since': 'Sat, 01 Jan 2022 00:00:00 GMT',
-              'If-None-Match': '123456789'
-            }
-          })
-          .then(function(response) {
-            if (response.status === 200) {
-              // 请求成功，处理响应
-              return response.text();
-            } else if (response.status === 304) {
-              // 资源未发生变化，使用缓存数据
-            } else {
-              // 请求失败，处理错误
-              throw new Error(response.status);
-            }
-          })
-          .then(function(data) {
-            console.log(data);
-          })
-          .catch(function(error) {
-            console.error(error);
-          });
+  1. Expires
 
-      ```
-  - 协商缓存： 客户端会先从缓存数据库中获取到一个缓存数据的标识，得到标识后请求服务端验证是否失效（新鲜），如果没有失效服务端会返回304，此时客户端直接从缓存中获取所请求的数据，如果标识失效，服务端会返回更新后的数据
-    - Last-Modified： 服务器在响应请求时，会告诉浏览器资源的最后修改时间
-    - Etag： 服务器响应请求时，通过此字段告诉浏览器当前资源在服务器生成的唯一标
-      - If-None-Match： 再次请求服务器时，浏览器的请求报文头部会包含此字段，后面的值为在缓存中获取的标识。服务器接收到次报文后发现If-None-Match则与被请求资源的唯一标识进行对比。
+  - Exprires 的值为服务端返回的数据到期时间。当再次请求时的请求时间小于返回的此时间，则直接使用缓存数据。
 
-    ```js
-      // 使用 XMLHttpRequest：
+  2. Cache-Control。
 
-      // 设置 If-Modified-Since 字段
-      xhr.setRequestHeader('If-Modified-Since', 'Sat, 01 Jan 2022 00:00:00 GMT');
+  - private：客户端可以缓存
+  - public：客户端和代理服务器都可以缓存
+  - max-age=t：缓存内容将在 t 秒后失效
+  - no-cache：需要使用协商缓存来验证缓存数据
+  - no-store：所有内容都不会缓存。
 
-      // 设置 If-None-Match 字段
-      xhr.setRequestHeader('If-None-Match', '123456789');
-    ```
+  ```js
+  // 使用 XMLHttpRequest 设置请求头
+  var xhr = new XMLHttpRequest()
+  xhr.open('GET', '/api/resource')
+  xhr.setRequestHeader('Cache-Control', 'max-age=3600')
+  xhr.send()
 
-  - 优点
-    1. 减少了冗余的数据传递，节省宽带流量
-    2. 减少了服务器的负担，大大提高了网站性能
-    3. 加快了客户端加载网页的速度 这也正是HTTP缓存属于客户端缓存的原因。
+  // 使用 fetch API 设置请求头
+  fetch('/api/resource', {
+    headers: {
+      'Cache-Control': 'max-age=3600',
+    },
+  })
 
-  - 强制缓存的优先级高于协商缓存
+  // 使用 fetch API 设置请求头
+  fetch('https://example.com/api/resource', {
+    method: 'GET',
+    headers: {
+      'If-Modified-Since': 'Sat, 01 Jan 2022 00:00:00 GMT',
+      'If-None-Match': '123456789',
+    },
+  })
+    .then(function (response) {
+      if (response.status === 200) {
+        // 请求成功，处理响应
+        return response.text()
+      } else if (response.status === 304) {
+        // 资源未发生变化，使用缓存数据
+      } else {
+        // 请求失败，处理错误
+        throw new Error(response.status)
+      }
+    })
+    .then(function (data) {
+      console.log(data)
+    })
+    .catch(function (error) {
+      console.error(error)
+    })
+  ```
+
+- 协商缓存： 客户端会先从缓存数据库中获取到一个缓存数据的标识，得到标识后请求服务端验证是否失效（新鲜），如果没有失效服务端会返回 304，此时客户端直接从缓存中获取所请求的数据，如果标识失效，服务端会返回更新后的数据
+
+  - Last-Modified： 服务器在响应请求时，会告诉浏览器资源的最后修改时间
+  - Etag： 服务器响应请求时，通过此字段告诉浏览器当前资源在服务器生成的唯一标
+    - If-None-Match： 再次请求服务器时，浏览器的请求报文头部会包含此字段，后面的值为在缓存中获取的标识。服务器接收到次报文后发现 If-None-Match 则与被请求资源的唯一标识进行对比。
+
+  ```js
+  // 使用 XMLHttpRequest：
+
+  // 设置 If-Modified-Since 字段
+  xhr.setRequestHeader('If-Modified-Since', 'Sat, 01 Jan 2022 00:00:00 GMT')
+
+  // 设置 If-None-Match 字段
+  xhr.setRequestHeader('If-None-Match', '123456789')
+  ```
+
+- 优点
+
+  1. 减少了冗余的数据传递，节省宽带流量
+  2. 减少了服务器的负担，大大提高了网站性能
+  3. 加快了客户端加载网页的速度 这也正是 HTTP 缓存属于客户端缓存的原因。
+
+- 强制缓存的优先级高于协商缓存
 
 # VUE
 
-### vue-router原理
-  1. hash模式  http://localhost:8080/index.html#/book?bookid=1
-    - 改变描点
-      可以通过location.hash = "/hashpath"的方式修改浏览器的hash值。
-    - 监听描点变化
-      可以通过监听hashchange事件监听hash值的变化。
-      ```js
-      window.addEventListener('hashchange', () => {
-        const hash = window.location.hash.substr(1)
-        // 根据hash值渲染不同的dom
-      })
-      ```
-    
-  2. history模式
-    - 改变url 
-      H5的history对象提供了pushState和replaceState两个方法，当调用这两个方法的时候，url会发生变化，浏览器访问历史也会发生变化，但是浏览器不会向后台发送请求。
-      ```js
-        // 第一个参数：data对象，在监听变化的事件中能够获取到
-        // 第二个参数：title标题
-        // 第三个参数：跳转地址
-        history.pushState({}, "", '/a')
-      ```
-    - 监听url变化
-      可以通过监听popstate事件监听history变化，也就是点击浏览器的前进或者后退功能时触发。
-      ```js
-        window.addEventListener("popstate", () => {
-            const path = window.location.pathname
-            // 根据path不同可渲染不同的dom
-        })
-      ```
+### vue-router 原理
 
-  总结：
-  1. hash模式下：
-    - 通过location.hash修改hash值，触发更新。
-    - 通过监听hashchange事件监听浏览器前进或者后退，触发更新。
+1. hash 模式 http://localhost:8080/index.html#/book?bookid=1
 
-  2. history模式下：
-    - 通过history.pushState修改浏览器地址，触发更新。
-    - 通过监听popstate事件监听浏览器前进或者后退，触发更新。
+   - 改变描点
+     可以通过 location.hash = "/hashpath"的方式修改浏览器的 hash 值。
+   - 监听描点变化
+     可以通过监听 hashchange 事件监听 hash 值的变化。
+     ```js
+     window.addEventListener('hashchange', () => {
+       const hash = window.location.hash.substr(1)
+       // 根据hash值渲染不同的dom
+     })
+     ```
 
-  3. 如何渲染router-view组件
-    - 通过Vue.observable在router实例上创建一个保存当前路由的监控对象current。
-    - 当浏览器地址变化的时候，修改监控对象current。
-    - 在router-view组件中监听监控对象current的变化，当current变化后，获取用户注册的相应component，并利用h函数将component渲染成vnodes，进而更新页面视图。
-### vue理解
-  - 一个渐进式框架
-  - 数据驱动
-  - 组件化
+2. history 模式
+
+   - 改变 url
+     H5 的 history 对象提供了 pushState 和 replaceState 两个方法，当调用这两个方法的时候，url 会发生变化，浏览器访问历史也会发生变化，但是浏览器不会向后台发送请求。
+     ```js
+     // 第一个参数：data对象，在监听变化的事件中能够获取到
+     // 第二个参数：title标题
+     // 第三个参数：跳转地址
+     history.pushState({}, '', '/a')
+     ```
+   - 监听 url 变化
+     可以通过监听 popstate 事件监听 history 变化，也就是点击浏览器的前进或者后退功能时触发。
+     ```js
+     window.addEventListener('popstate', () => {
+       const path = window.location.pathname
+       // 根据path不同可渲染不同的dom
+     })
+     ```
+
+总结：
+
+1. hash 模式下：
+
+   - 通过 location.hash 修改 hash 值，触发更新。
+   - 通过监听 hashchange 事件监听浏览器前进或者后退，触发更新。
+
+2. history 模式下：
+
+   - 通过 history.pushState 修改浏览器地址，触发更新。
+   - 通过监听 popstate 事件监听浏览器前进或者后退，触发更新。
+
+3. 如何渲染 router-view 组件
+
+   - 通过 Vue.observable 在 router 实例上创建一个保存当前路由的监控对象 current。
+   - 当浏览器地址变化的时候，修改监控对象 current。
+   - 在 router-view 组件中监听监控对象 current 的变化，当 current 变化后，获取用户注册的相应 component，并利用 h 函数将 component 渲染成 vnodes，进而更新页面视图。
+
+### vue 理解
+
+- 一个渐进式框架
+- 数据驱动
+- 组件化
+
 ### vue2.0 原理
+
     通过数据劫持和发布订阅模式的方式通过object.defineProperty()来劫持各个属性的个getter setter , 在数据发生变化是发布消息给订阅者触发监听
     1. observe是对数据的劫持： 需要把data数据递归遍历包括各个子属性通过object.defineProperty()来劫持数据转换成个getter 和 setter， 添加订阅器（dep） 和watcherd 依赖关系，当数据发生变化发生通知
     2. compiler: 负责编译模板，解析指令，差值表达式，负责页面的首次渲染，当数据发生变化，收到通知，更新视图
@@ -391,208 +436,272 @@
       ①自身实例化的时候往dep对象中添加自己
       ②自身必须有一个 update()方法
       ③待属性变动 dep.notice()通知时，能调用自身的 update()方法，并触发 Compile 中绑定的回调，则功成身退。
+
 ### vue3.0 原理
-  1. 响应式系统升级
-    - 3.0 使用proxy设置响应式，
-        1. 可以监听动态添加对象的属性
-        2. 可以监听删除的属性
-        3. 可以监听数组的索引以及数组的length属性
-  2. 编译优化：对diff进行优化
-  - Vue2.x中通过标记静态根节点 优化diff的过程
-  - Vue3.0中标记和提升所有静态的根节点，diff的时候只需要对比动态节点内容
-      - Fragments （升级vetur插件）
-      - 静态提升
-      - Patch flag（标记）跳过静态节点，更新动态节点，提升diff性能
-      - 缓存事件处理函数
-  3. 源码体积优化： 源码体积这块 Vue3.0通过将各个功能都解耦可以单独引入的方式
-    - 优化打包体积
-    - Vue3.0中移除了一些不常用的API
-      - inline-template filter等
-      - Tree-shaking
-#### VUE3响应式
-  - reactive
-    1. 传入的必须是一个对象，如果不是对象就直接返回
-    2. 对象的属性添加删除都是响应式的 但是对对象进行重新赋值会丢失响应式
-    3. 不可以解构 解构后的属性不是响应式
-  - ref
-    1. 对传入的基本数据类型的数据进行响应式处理
-    2. 将这个基本类型的数据包装为一个响应式对象
-    3. 通过value属性来访问这个包装后对象的值
-  - toRefs 
-    1. toRefs是对我们reactive包装过的响应式对象进行处理，在经过处理后就可以进行解构赋值的操作
-  - computed
-    - computed 接收的是一个函数，在计算后返回得到一个值
-#### vue2和vue3 的区别
-  - 响应式系统的改进： 2.x是通过object.defineProperty()响应， 3.x通过proxy响应，还支持更深的数据响应和数组的数据响应
-  - Composition API： 3.x引入compositionAPI 是基于函数风格的api，允许用户组合函数来组织和重用代码逻辑。与options api 相比有更强的代码组织和复用性， 是组建更易于维护
-  - 虚拟 DOM 的优化： vue3.x中优化了虚拟DOM 采用了标记和提升所有静态根节点，通过patch flag 跳过静态节点，更新动态节点，提升diff 性能
-  - 支持ts, 
-  - 源代码体积的优化，移除不常用的api 
 
-#### Vue和react 区别
-  Vue 和 React 是两个流行的前端框架，它们之间存在以下主要区别：
-  1. 响应式系统的实现方式：
-    - Vue 使用了基于对象属性的响应式系统，通过劫持对象属性来实现数据的响应式更新。
-    - React 使用了虚拟 DOM 和单向数据流的方式，通过比较虚拟 DOM 的差异来更新真实 DOM。
-  2. 组件化开发方式：
-    - Vue 使用了模板语法，将 HTML、CSS 和 JavaScript 组合在一个文件中，使得组件的开发和维护更加直观和简单。
-    - React 则采用了 JSX，将 HTML 和 JavaScript 结合在一起，使用 JavaScript 编写组件。
+1. 响应式系统升级
 
-  3. 学习曲线和易用性：
-    - Vue 的学习曲线相对较低，上手较快，因为它采用了模板语法和提供了丰富的指令，适合新手和小型项目。
-    - React 的学习曲线相对较陡峭，因为它需要掌握 JSX 语法和理解虚拟 DOM 的概念，适合有一定前端经验和大型项目。
+   - 3.0 使用 proxy 设置响应式，
+     1. 可以监听动态添加对象的属性
+     2. 可以监听删除的属性
+     3. 可以监听数组的索引以及数组的 length 属性
 
-  4. 生态系统和插件支持：Vue 生态系统较为全面，官方提供了大量的插件和工具，可以满足不同的需求。React 生态系统庞大且活跃，社区提供了丰富的第三方库和组件，可以广泛应用于各种场景。
+2. 编译优化：对 diff 进行优化
 
-  5. 社区和生态环境：Vue 的社区相对较小，但在国内有较大的影响力，并且得到了阿里巴巴等大厂的支持。React 的社区非常庞大且活跃，在全球范围内都有广泛的应用和支持。
+- Vue2.x 中通过标记静态根节点 优化 diff 的过程
+- Vue3.0 中标记和提升所有静态的根节点，diff 的时候只需要对比动态节点内容
+  - Fragments （升级 vetur 插件）
+  - 静态提升
+  - Patch flag（标记）跳过静态节点，更新动态节点，提升 diff 性能
+  - 缓存事件处理函数
 
-### watch原理：
-  - watch用于监听数据的变化，当被监听的数据发生变化时，会触发相应的回调函数。
-  - 在Vue内部，watch通过依赖追踪和观察者模式实现。Vue会在数据发生变化时，收集相关的依赖，并将watcher对象添加到依赖列表中。
-  - 当被监听的数据发生变化时，Vue会遍历依赖列表，触发相应的watcher对象的更新操作，从而执行对应的回调函数。
-### computed原理：
-  - computed用于计算衍生数据，它会根据依赖的响应式数据自动进行缓存和更新。
-  - 在Vue内部，computed通过使用getter和setter函数来实现。
-  - 当访问computed属性时，Vue会执行对应的getter函数，该函数会返回计算后的值。
-  - 在计算过程中，Vue会追踪依赖的响应式数据，并将computed属性与这些依赖建立关联。
-  - 当依赖的响应式数据发生变化时，Vue会标记computed属性为脏（dirty）状态。
-  - 当下次访问computed属性时，Vue会检测到脏状态，并执行对应的setter函数，重新计算该属性的值，并进行缓存。
-  - 这样，在多次访问同一个computed属性时，只会计算一次，并且在依赖的数据未发生变化时，会直接返回缓存的值，避免重复计算。
+3. 源码体积优化： 源码体积这块 Vue3.0 通过将各个功能都解耦可以单独引入的方式
+
+   - 优化打包体积
+   - Vue3.0 中移除了一些不常用的 API
+     - inline-template filter 等
+     - Tree-shaking
+
+#### VUE3 响应式
+
+- reactive
+  1. 传入的必须是一个对象，如果不是对象就直接返回
+  2. 对象的属性添加删除都是响应式的 但是对对象进行重新赋值会丢失响应式
+  3. 不可以解构 解构后的属性不是响应式
+- ref
+  1. 对传入的基本数据类型的数据进行响应式处理
+  2. 将这个基本类型的数据包装为一个响应式对象
+  3. 通过 value 属性来访问这个包装后对象的值
+- toRefs
+  1. toRefs 是对我们 reactive 包装过的响应式对象进行处理，在经过处理后就可以进行解构赋值的操作
+- computed
+  - computed 接收的是一个函数，在计算后返回得到一个值
+
+#### vue2 和 vue3 的区别
+
+- 响应式系统的改进： 2.x 是通过 object.defineProperty()响应， 3.x 通过 proxy 响应，还支持更深的数据响应和数组的数据响应
+- Composition API： 3.x 引入 compositionAPI 是基于函数风格的 api，允许用户组合函数来组织和重用代码逻辑。与 options api 相比有更强的代码组织和复用性， 是组建更易于维护
+- 虚拟 DOM 的优化： vue3.x 中优化了虚拟 DOM 采用了标记和提升所有静态根节点，通过 patch flag 跳过静态节点，更新动态节点，提升 diff 性能
+- 支持 ts,
+- 源代码体积的优化，移除不常用的 api
+
+#### Vue 和 react 区别
+
+Vue 和 React 是两个流行的前端框架，它们之间存在以下主要区别：
+
+1. 响应式系统的实现方式：
+
+   - Vue 使用了基于对象属性的响应式系统，通过劫持对象属性来实现数据的响应式更新。
+   - React 使用了虚拟 DOM 和单向数据流的方式，通过比较虚拟 DOM 的差异来更新真实 DOM。
+
+2. 组件化开发方式：
+
+   - Vue 使用了模板语法，将 HTML、CSS 和 JavaScript 组合在一个文件中，使得组件的开发和维护更加直观和简单。
+   - React 则采用了 JSX，将 HTML 和 JavaScript 结合在一起，使用 JavaScript 编写组件。
+
+3. 学习曲线和易用性：
+
+   - Vue 的学习曲线相对较低，上手较快，因为它采用了模板语法和提供了丰富的指令，适合新手和小型项目。
+   - React 的学习曲线相对较陡峭，因为它需要掌握 JSX 语法和理解虚拟 DOM 的概念，适合有一定前端经验和大型项目。
+
+4. 生态系统和插件支持：Vue 生态系统较为全面，官方提供了大量的插件和工具，可以满足不同的需求。React 生态系统庞大且活跃，社区提供了丰富的第三方库和组件，可以广泛应用于各种场景。
+
+5. 社区和生态环境：Vue 的社区相对较小，但在国内有较大的影响力，并且得到了阿里巴巴等大厂的支持。React 的社区非常庞大且活跃，在全球范围内都有广泛的应用和支持。
+
+### watch 原理：
+
+- watch 用于监听数据的变化，当被监听的数据发生变化时，会触发相应的回调函数。
+- 在 Vue 内部，watch 通过依赖追踪和观察者模式实现。Vue 会在数据发生变化时，收集相关的依赖，并将 watcher 对象添加到依赖列表中。
+- 当被监听的数据发生变化时，Vue 会遍历依赖列表，触发相应的 watcher 对象的更新操作，从而执行对应的回调函数。
+
+### computed 原理：
+
+- computed 用于计算衍生数据，它会根据依赖的响应式数据自动进行缓存和更新。
+- 在 Vue 内部，computed 通过使用 getter 和 setter 函数来实现。
+- 当访问 computed 属性时，Vue 会执行对应的 getter 函数，该函数会返回计算后的值。
+- 在计算过程中，Vue 会追踪依赖的响应式数据，并将 computed 属性与这些依赖建立关联。
+- 当依赖的响应式数据发生变化时，Vue 会标记 computed 属性为脏（dirty）状态。
+- 当下次访问 computed 属性时，Vue 会检测到脏状态，并执行对应的 setter 函数，重新计算该属性的值，并进行缓存。
+- 这样，在多次访问同一个 computed 属性时，只会计算一次，并且在依赖的数据未发生变化时，会直接返回缓存的值，避免重复计算。
 
 # React
+
 # webpack
-  https://juejin.cn/post/6844904094281236487#heading-0
 
-### webpack构建流程
-   Webpack 的运行流程是一个串行的过程，从启动到结束会依次执行以下流程：
+https://juejin.cn/post/6844904094281236487#heading-0
 
-  1. 初始化参数：从配置文件和 Shell 语句中读取与合并参数，得出最终的参数
-  2. 开始编译：用上一步得到的参数初始化 Compiler 对象，加载所有配置的插件，执行对象的 run 方法开始执行编译
-  3. 确定入口：根据配置中的 entry 找出所有的入口文件
-  4. 编译模块：从入口文件出发，调用所有配置的 Loader 对模块进行翻译，再找出该模块依赖的模块，再递归本步骤直到所有入口依赖的文件都经过了本步骤的处理
-  5. 完成模块编译：在经过第4步使用 Loader 翻译完所有模块后，得到了每个模块被翻译后的最终内容以及它们之间的依赖关系
-  6. 输出资源：根据入口和模块之间的依赖关系，组装成一个个包含多个模块的 Chunk，再把每个 Chunk 转换成一个单独的文件加入到输出列表，这步是可以修改输出内容的最后机会
-  7. 输出完成：在确定好输出内容后，根据配置确定输出的路径和文件名，把文件内容写入到文件系统
-### webpack优化
- 1. 压缩代码
-   - 多进程并行压缩 
-      - webpack-paralle-uglify-plugin
-      - terser-webpack-plugin 开启 parallel 参数
-  2. 图片压缩
-      - 配置 image-webpack-loader
-  3. 缩小打包作用域
-      - exclude/include (确定 loader 规则范围)
-  4. Tree shaking
-    - 打包过程中检测工程中没有引用过的模块并进行标记，在资源压缩时将它们从最终的bundle中去掉(只能对ES6 Modlue生效) 开发中尽可能使用ES6 Module的模块，提高tree shaking效率
-  5. Scope hoisting
-    - 构建后的代码会存在大量闭包，造成体积增大，运行代码时创建的函数作用域变多，内存开销变大。Scope hoisting 将所有模块的代码按照引用顺序放在一个函数作用域里，然后适当的重命名一些变量以防止变量名冲突
+### webpack 构建流程
 
-  ### loader和plugin 区别
-  1. Loader 本质就是一个函数，在该函数中对接收到的内容进行转换，返回转换后的结果 
-     - Loader 在 module.rules 中配置，作为模块的解析规则，类型为数组。每一项都是一个 Object，内部包含了 test(类型文件)、loader、options (参数)等属性。
-  2. Plugin 就是插件，基于事件流框架 Tapable，插件可以扩展 Webpack 的功能
-    - Plugin 在 plugins 中单独配置，类型为数组，每一项是一个 Plugin 的实例，参数都通过构造函数传入。
-# Babel原理
-  1. 解析：将代码转换成 AST
-    - 词法分析：将代码(字符串)分割为token流，即语法单元成的数组
-    - 语法分析：分析token流(上面生成的数组)并生成 AST
-  2. 转换：访问 AST 的节点进行变换操作生产新的 AST
-   - Taro就是利用 babel 完成的小程序语法转换
-  3. 生成：以新的 AST 为基础生成代码
+Webpack 的运行流程是一个串行的过程，从启动到结束会依次执行以下流程：
+
+1. 初始化参数：从配置文件和 Shell 语句中读取与合并参数，得出最终的参数
+2. 开始编译：用上一步得到的参数初始化 Compiler 对象，加载所有配置的插件，执行对象的 run 方法开始执行编译
+3. 确定入口：根据配置中的 entry 找出所有的入口文件
+4. 编译模块：从入口文件出发，调用所有配置的 Loader 对模块进行翻译，再找出该模块依赖的模块，再递归本步骤直到所有入口依赖的文件都经过了本步骤的处理
+5. 完成模块编译：在经过第 4 步使用 Loader 翻译完所有模块后，得到了每个模块被翻译后的最终内容以及它们之间的依赖关系
+6. 输出资源：根据入口和模块之间的依赖关系，组装成一个个包含多个模块的 Chunk，再把每个 Chunk 转换成一个单独的文件加入到输出列表，这步是可以修改输出内容的最后机会
+7. 输出完成：在确定好输出内容后，根据配置确定输出的路径和文件名，把文件内容写入到文件系统
+
+### webpack 优化
+
+1.  压缩代码
+
+- 多进程并行压缩
+  - webpack-paralle-uglify-plugin
+  - terser-webpack-plugin 开启 parallel 参数
+
+2. 图片压缩
+   - 配置 image-webpack-loader
+3. 缩小打包作用域
+   - exclude/include (确定 loader 规则范围)
+4. Tree shaking
+
+   - 打包过程中检测工程中没有引用过的模块并进行标记，在资源压缩时将它们从最终的 bundle 中去掉(只能对 ES6 Modlue 生效) 开发中尽可能使用 ES6 Module 的模块，提高 tree shaking 效率
+
+5. Scope hoisting
+
+   - 构建后的代码会存在大量闭包，造成体积增大，运行代码时创建的函数作用域变多，内存开销变大。Scope hoisting 将所有模块的代码按照引用顺序放在一个函数作用域里，然后适当的重命名一些变量以防止变量名冲突
+
+### loader 和 plugin 区别
+
+1. Loader 本质就是一个函数，在该函数中对接收到的内容进行转换，返回转换后的结果
+   - Loader 在 module.rules 中配置，作为模块的解析规则，类型为数组。每一项都是一个 Object，内部包含了 test(类型文件)、loader、options (参数)等属性。
+2. Plugin 就是插件，基于事件流框架 Tapable，插件可以扩展 Webpack 的功能
+
+   - Plugin 在 plugins 中单独配置，类型为数组，每一项是一个 Plugin 的实例，参数都通过构造函数传入。
+
+# Babel 原理
+
+1. 解析：将代码转换成 AST
+
+   - 词法分析：将代码(字符串)分割为 token 流，即语法单元成的数组
+   - 语法分析：分析 token 流(上面生成的数组)并生成 AST
+
+2. 转换：访问 AST 的节点进行变换操作生产新的 AST
+
+- Taro 就是利用 babel 完成的小程序语法转换
+
+3. 生成：以新的 AST 为基础生成代码
 
 # 模块化
-  ## 模块化理解
-  1. 什么是模块化
-    - 将一个复杂的程序依据一定的规则(规范)封装成几个块(文件), 并进行组合在一起
-    - 块的内部数据与实现是私有的, 只是向外部暴露一些接口(方法)与外部其它模块通信
-  2.  模块化的好处
-    - 避免命名冲突(减少命名空间污染)
-    - 更好的分离, 按需加载
-    - 更高复用性
-    - 高可维护性
-  ## 模块化规范
-  1. CommonJS
-    - 在服务器端，模块的加载是运行时同步加载的；在浏览器端，模块需要提前编译打包处理。
-    ### 基本语法
-      - 暴露模块：module.exports = value或exports.xxx = value
-      - 引入模块：require(xxx),如果是第三方模块，xxx为模块名；如果是自定义模块，xxx为模块文件路径
-      - CommonJS模块的加载机制是，输入的是被输出的值的拷贝。也就是说，一旦输出一个值，模块内部的变化就影响不到这个值。
-  2. AMD
-    - AMD规范则是非同步加载模块，允许指定回调函数, ，如果是浏览器环境，要从服务器端加载模块，这时就必须采用非同步模式，因此浏览器端一般采用AMD规范。
-    ### 基本语法
-    #### 定义暴露模块:
-    ```js
-      //定义没有依赖的模块
-      define(function(){
-        return 模块
-      })
 
-      //定义有依赖的模块
-      define(['module1', 'module2'], function(m1, m2){
-        return 模块
-      })
+## 模块化理解
 
-    ```
-    #### 引入使用模块:
-    ```js
-      require(['module1', 'module2'], function(m1, m2){
-        使用m1/m2
-      })
+1. 什么是模块化
 
-    ```
-  3. CMD
-    - CMD规范专门用于浏览器端，模块的加载是异步的，模块使用时才会加载执行。CMD规范整合了CommonJS和AMD规范的特点。在 Sea.js 中，所有 JavaScript 模块都遵循 CMD模块定义规范。
-    #### 定义暴露模块：
-    ```JS
-      //定义有依赖的模块
-      define(function(require, exports, module){
-        //引入依赖模块(同步)
-        var module2 = require('./module2')
-        //引入依赖模块(异步)
-          require.async('./module3', function (m3) {
-          })
-        //暴露模块
-        exports.xxx = value
-      })
+   - 将一个复杂的程序依据一定的规则(规范)封装成几个块(文件), 并进行组合在一起
+   - 块的内部数据与实现是私有的, 只是向外部暴露一些接口(方法)与外部其它模块通信
 
-      //定义没有依赖的模块
-      define(function(require, exports, module){
-        exports.xxx = value
-        module.exports = value
-      })
+2. 模块化的好处
+
+   - 避免命名冲突(减少命名空间污染)
+   - 更好的分离, 按需加载
+   - 更高复用性
+   - 高可维护性
+
+## 模块化规范
+
+1. CommonJS
+
+   - 在服务器端，模块的加载是运行时同步加载的；在浏览器端，模块需要提前编译打包处理。
+
+   ### 基本语法
+
+   - 暴露模块：module.exports = value 或 exports.xxx = value
+   - 引入模块：require(xxx),如果是第三方模块，xxx 为模块名；如果是自定义模块，xxx 为模块文件路径
+   - CommonJS 模块的加载机制是，输入的是被输出的值的拷贝。也就是说，一旦输出一个值，模块内部的变化就影响不到这个值。
+
+2. AMD
+
+   - AMD 规范则是非同步加载模块，允许指定回调函数, ，如果是浏览器环境，要从服务器端加载模块，这时就必须采用非同步模式，因此浏览器端一般采用 AMD 规范。
+
+   ### 基本语法
+
+   #### 定义暴露模块:
+
+   ```js
+   //定义没有依赖的模块
+   define(function () {
+     return 模块
+   })
+
+   //定义有依赖的模块
+   define(['module1', 'module2'], function (m1, m2) {
+     return 模块
+   })
+   ```
+
+   #### 引入使用模块:
+
+   ```js
+   require(['module1', 'module2'], function (m1, m2) {
+     使用m1 / m2
+   })
+   ```
+
+3. CMD
+
+   - CMD 规范专门用于浏览器端，模块的加载是异步的，模块使用时才会加载执行。CMD 规范整合了 CommonJS 和 AMD 规范的特点。在 Sea.js 中，所有 JavaScript 模块都遵循 CMD 模块定义规范。
+
+   #### 定义暴露模块：
+
+   ```JS
+     //定义有依赖的模块
+     define(function(require, exports, module){
+       //引入依赖模块(同步)
+       var module2 = require('./module2')
+       //引入依赖模块(异步)
+         require.async('./module3', function (m3) {
+         })
+       //暴露模块
+       exports.xxx = value
+     })
+
+     //定义没有依赖的模块
+     define(function(require, exports, module){
+       exports.xxx = value
+       module.exports = value
+     })
 
 
-    ```
-    #### 引用模块
-    ```js
-      define(function (require) {
-        var m1 = require('./module1')
-        var m4 = require('./module4')
-        m1.show()
-        m4.show()
-      })
+   ```
 
-    ```
-  4. ES6模块化
-    - ES6 模块的设计思想是尽量的静态化，使得编译时就能确定模块的依赖关系，以及输入和输出的变量
-    #### ES6模块化语法
-     export命令用于规定模块的对外接口，import命令用于输入其他模块提供的功能。
-      ```js
-        /** 定义模块 math.js **/
-        var basicNum = 0;
-        var add = function (a, b) {
-            return a + b;
-        };
-        export { basicNum, add };
-        /** 引用模块 **/
-        import { basicNum, add } from './math';
-        function test(ele) {
-            ele.textContent = add(99 + basicNum);
-        }
+   #### 引用模块
 
-      ```
-  #### ES6 模块与 CommonJS 模块的差异
-    ES Module从语法到原理详解[https://juejin.cn/post/7098192216229117959] 
+   ```js
+   define(function (require) {
+     var m1 = require('./module1')
+     var m4 = require('./module4')
+     m1.show()
+     m4.show()
+   })
+   ```
+
+4. ES6 模块化
+
+   - ES6 模块的设计思想是尽量的静态化，使得编译时就能确定模块的依赖关系，以及输入和输出的变量
+
+   #### ES6 模块化语法
+
+   export 命令用于规定模块的对外接口，import 命令用于输入其他模块提供的功能。
+
+   ```js
+   /** 定义模块 math.js **/
+   var basicNum = 0
+   var add = function (a, b) {
+     return a + b
+   }
+   export { basicNum, add }
+   /** 引用模块 **/
+   import { basicNum, add } from './math'
+   function test(ele) {
+     ele.textContent = add(99 + basicNum)
+   }
+   ```
+
+#### ES6 模块与 CommonJS 模块的差异
+
+    ES Module从语法到原理详解[https://juejin.cn/post/7098192216229117959]
     1. 区别
       - ES Module 输出的是值的引用，而 CommonJS 输出的是值的拷贝；
       - ES Module 是编译时执行，而 CommonJS 模块是在运行时加载；
@@ -621,30 +730,122 @@
 
       > ES6模块代码的实质是从fs模块加载 3 个方法，其他方法不加载。这种加载称为**“编译时加载”或者静态加载**，即 ES6 可以在编译时就完成模块加载，效率要比 CommonJS 模块的加载方式高。当然，这也导致了没法引用 ES6 模块本身，因为它不是对象。
       ```
-# 性能
-  1. 减少http请求
-  2. 使用节流防抖
-  3. 减少重绘回流
-  4. 静态资源使用cdn
-  5. css 放头部， js放尾部
-    - CSS 执行会阻塞渲染，阻止 JS 执行
-    - JS 加载和执行会阻塞 HTML 解析，阻止 CSSOM 构建
-  6. 压缩文件
-    - JavaScript：UglifyPlugin
-    - CSS ：MiniCssExtractPlugin
-    - HTML：HtmlWebpackPlugin 
 
-  ### 图片优化
+# 性能
+
+1. 减少 http 请求
+2. 使用节流防抖
+3. 减少重绘回流
+4. 静态资源使用 cdn
+5. css 放头部， js 放尾部
+
+   - CSS 执行会阻塞渲染，阻止 JS 执行
+   - JS 加载和执行会阻塞 HTML 解析，阻止 CSSOM 构建
+
+6. 压缩文件
+
+   - JavaScript：UglifyPlugin
+   - CSS ：MiniCssExtractPlugin
+   - HTML：HtmlWebpackPlugin
+
+### 图片优化
+
     1. 图片压缩
     2. 图片分割：将超大图片分割成小图进行加载， 可以避免一次性加载整个图片，从而加快加载速度。这种方式需要在前端实现图片拼接，需要确保拼接后的图片无缝衔接
     3. cnd加速： 使用cdn可以将图片缓存在离用户更近的节点上，从而加速图片加载速度。如果需要加载的图片是静态资源，可以将其存储在 CDN 上，以便快速访问。
     4. 懒加载： 懒加载是一种图片延迟加载的方式，即当用户浏览到需要加载的图片时才进行加载，可以有效避免一次性加载大量图片而导致页面加载速度缓慢。
     5. WebP 格式：使用 WebP 格式可以将图片大小减小到 JPEG 和 PNG 的一半以下，从而加快图片加载速度。
     6. http2.0:  HTTP/2：使用 HTTP/2 协议可以并行加载多个图片，从而加快页面加载速度。
-    7. 预加载：预加载是在页面加载完毕后，提前加载下一步所需要的资源。在图片加载方面，可以在页面加载完毕后提前加载下一个需要显示的图片，以便用户快速浏览。 
+    7. 预加载：预加载是在页面加载完毕后，提前加载下一步所需要的资源。在图片加载方面，可以在页面加载完毕后提前加载下一个需要显示的图片，以便用户快速浏览。
+
+## js 性能优化
+
+### 内存管理
+
+- 内存管理概念
+
+  - 内存： 可读写单元组成的一片可操作的空间
+  - 管理： 人为的去操作一片空间的申请，使用，释放
+  - 内存管理: 开发者主动申请空间， 使用空间，释放空间
+
+- GC 算法
+  - 引用计数
+    - 设置引用数， 判断当前引用数是否为 0
+    - 优点
+      - 发现垃圾立即回收
+      - 最大限度减少程序暂停
+    - 缺点
+      - **无法回收循环引用的对象**
+      - 时间开销大
+  - 标记清除
+    - 优点
+      - **可以回收循环引用的对象**
+    - 缺点
+      - 不会立即回收垃圾对象
+      - 容易产生碎片化空间
+  - 标记整理： 标记阶段的操作和标记清除一致， 清除阶段会先整理，移动对象位置
+    - 优点
+      - 可以回收循环引用的对象
+      - 减少碎片化空间
+    - 缺点
+      - 不会立即回收垃圾对象  
+  - V8引擎
+    - 主流的一款js引擎
+    - V8 采用即时编译
+    - V8 内存设限
+    1. V8垃圾回收策略
+      - 采用分代回收思想
+      - 内存分为辛申大，老生代
+      - 针对不同对象采用不同算法
+    2. V8 中常用的GC算法
+      - 分代回收
+      - 空间复制
+      - 标记清除
+      - 标记整理
+      - 标记增量
+    3. V8内存分配
+      - V8 内存空间一分为二
+      - 小空间用于存储新生代对象（32M| 16M）
+      - 新生代指的是存活时间较短的对象
+    4. 新生代对象回收实现
+      - 回收过程采用**复制算法 + 标记整理**
+      - 新生代内存区分为两个等大小的空间
+      - 使用空间为from ，空闲空间为to
+      - 活动对象存储于from空间
+      - 标记整理后将活动对象拷贝至to
+      - from与to交换空间完成示范
+    5. 老生代对象回收实现
+      - 采用**标记清除， 标记整理， 增量标记算法**
+      - 首先使用标记清除完成垃圾回收空间的回收
+      - 采用标记整理进行空间优化
+      - 采用增量标记进行效率优化
+    6. 新生代和老生代对比
+      - 新生代区域回收垃圾使用空间换时间
+      - 老生代区域垃圾不适合复制算法
+
+### 监控内存的方式
+  1. 内存泄露： 内存使用持续升高
+  2. 内存膨胀： 在多数设备上都存在性能问题
+  3. 频繁垃圾回收： 通过内存变化图进行分析
+
+  - 监控内存的方式
+    1. 浏览器任务管理器
+    2. timeline时序图记录
+    3. 堆快照查找分离dom
+  - 如何确定频繁的垃圾回收 
+    1. timeline中频繁的上升下降
+    2. 任务管理器中数据频繁的增加减小
+
+
+
+### 垃圾回收机制
+
 # uniapp & 小程序
+
 # 常见手写
-  ### 去重
+
+### 去重
+
     ```js
       let arr = [1, 3, 4, 4, 5, 6, 7, 4]
       // new Set
@@ -663,11 +864,14 @@
         return acc
       }, [])
     ```
+
 # 排序
 
-  排序: [https://github.com/hustcc/JS-Sorting-Algorithm](https://github.com/hustcc/JS-Sorting-Algorithm)
-  在线阅读地址：[https://sort.hust.cc/](https://sort.hust.cc/)
-  ### 1.冒泡排序
+排序: [https://github.com/hustcc/JS-Sorting-Algorithm](https://github.com/hustcc/JS-Sorting-Algorithm)
+在线阅读地址：[https://sort.hust.cc/](https://sort.hust.cc/)
+
+### 1.冒泡排序
+
     ```js
       function bubble(arr){
         for(let i = 0; i< arr.length-1; i++){
@@ -683,176 +887,195 @@
       }
     ```
 
-  ### 2.快速排序
-  ```js
-    function quicksort4(arr) {
-      if (arr.length <= 1) return arr
-      // 找基准下标
-      let provideIndex = Math.floor(arr.length / 2)
-      // 找基准下的值
-      let provide = arr.splice(provideIndex, 1)[0]
-      let left = []
-      let right = []
-      for (let i = 0; i < arr.length; i++) {
-        if (arr[i] < provide) {
-          left.push(arr[i])
-        } else {
-          right.push(arr[i])
-        }
-      }
-      return quicksort4(left).concat([provide], quicksort4(right))
-    }
-  ```
-  ### 3.选择排序
-  ```js
+### 2.快速排序
 
-    function select2(arr) {
-      let minIndex,temp
-      for(let i = 0; i< arr.length; i++){
-        minIndex = i
-        for(let j = i+1; j<arr.length; j++ ){
-          if(arr[j] < arr[minIndex]){ // 比对最小值
-            minIndex = j              // 将最小数的索引保存
-          }
-        }
-        temp = arr[i]
-        arr[i] = arr[minIndex]
-        arr[minIndex] = temp
-      }
-      return arr
+```js
+function quicksort4(arr) {
+  if (arr.length <= 1) return arr
+  // 找基准下标
+  let provideIndex = Math.floor(arr.length / 2)
+  // 找基准下的值
+  let provide = arr.splice(provideIndex, 1)[0]
+  let left = []
+  let right = []
+  for (let i = 0; i < arr.length; i++) {
+    if (arr[i] < provide) {
+      left.push(arr[i])
+    } else {
+      right.push(arr[i])
     }
-  ```
+  }
+  return quicksort4(left).concat([provide], quicksort4(right))
+}
+```
 
-  ### 4.插入排序
+### 3.选择排序
+
+```js
+function select2(arr) {
+  let minIndex, temp
+  for (let i = 0; i < arr.length; i++) {
+    minIndex = i
+    for (let j = i + 1; j < arr.length; j++) {
+      if (arr[j] < arr[minIndex]) {
+        // 比对最小值
+        minIndex = j // 将最小数的索引保存
+      }
+    }
+    temp = arr[i]
+    arr[i] = arr[minIndex]
+    arr[minIndex] = temp
+  }
+  return arr
+}
+```
+
+### 4.插入排序
+
     - 它的工作原理是通过构建有序序列，对于未排序数据，在已排序序列中从后向前扫描，找到相应位置并插入。
     - 算法步骤
       1. 将第一待排序序列第一个元素看做一个有序序列，把第二个元素到最后一个元素当成是未排序序列。
       2. 从头到尾依次扫描未排序序列，将扫描到的每个元素插入有序序列的适当位置。（如果待插入的元素与有序序列中的某个元素相等，则将待插入元素插入到相等元素的后面。）
-  ```js
-    function insertionSort2(arr){
-      let preIndex, current
-      for(let i= 1; i< arr.length; i++){
-        preIndex = i-1; 
-        current = arr[i]
-        // 前面一个值 > 当前的值
-        while(preIndex >= 0 && arr[preIndex] > current){
-          arr[preIndex + 1] = arr[preIndex]
-          preIndex--
-        }
-        arr[preIndex+ 1] = current
-      }
-      return arr
-    }
-  ```
 
+```js
+function insertionSort2(arr) {
+  let preIndex, current
+  for (let i = 1; i < arr.length; i++) {
+    preIndex = i - 1
+    current = arr[i]
+    // 前面一个值 > 当前的值
+    while (preIndex >= 0 && arr[preIndex] > current) {
+      arr[preIndex + 1] = arr[preIndex]
+      preIndex--
+    }
+    arr[preIndex + 1] = current
+  }
+  return arr
+}
+```
 
 # 错误上报 搜集页面错误，进行上报，然后对症分析
+
 https://juejin.cn/post/6987681953424080926
 
-  ```js
-      // 常见捕获方式：
-    // 浏览器端
-    window.onerror // 全局异常捕获
-    window.addEventListener('error') // js错误、资源加载错误
-    window.addEventListener('unhandledrejection') // 没有catch的Promise错误
+```js
+// 常见捕获方式：
+// 浏览器端
+window.onerror // 全局异常捕获
+window.addEventListener('error') // js错误、资源加载错误
+window.addEventListener('unhandledrejection') // 没有catch的Promise错误
 
-    // node端
-    process.on('uncaughtException') // 全局异常捕获
-    process.on('unhandledRejection') // 没有catch的Promise错误
+// node端
+process.on('uncaughtException') // 全局异常捕获
+process.on('unhandledRejection') // 没有catch的Promise错误
 
-    // 异步异常捕获
-    /**
-     * 重写原生、三方库相关方法：
-     * 1.setTimeout / setInterval
-     * 2.fetch
-     * 3.XMLHttpRequest
-     */
-    const originalSetTimeout = window.setTimeout;
-    window.setTimeout = (fn, time) => {
-        const wrap = () => {
-            try {
-                fn()
-            } catch (e) {
-                // do something
-            }
-        }
-        return originalSetTimeout(wrap, time);
+// 异步异常捕获
+/**
+ * 重写原生、三方库相关方法：
+ * 1.setTimeout / setInterval
+ * 2.fetch
+ * 3.XMLHttpRequest
+ */
+const originalSetTimeout = window.setTimeout
+window.setTimeout = (fn, time) => {
+  const wrap = () => {
+    try {
+      fn()
+    } catch (e) {
+      // do something
     }
+  }
+  return originalSetTimeout(wrap, time)
+}
 
-    // 利用框架、三方库本身能力
-    /**
-     * 重写原生、三方库相关方法：
-     * 1.Vue.config.errorHandler
-     * 2.React ErrorBoundary
-     */
-    class ErrorBoundary extends React.Component {
-        static getDerivedStateFromError(error) {
-            return { hasError: true };
-        }
+// 利用框架、三方库本身能力
+/**
+ * 重写原生、三方库相关方法：
+ * 1.Vue.config.errorHandler
+ * 2.React ErrorBoundary
+ */
+class ErrorBoundary extends React.Component {
+  static getDerivedStateFromError(error) {
+    return { hasError: true }
+  }
 
-        componentDidCatch(error, errorInfo) {
-            logErrorToMyService(error, errorInfo);
-        }
+  componentDidCatch(error, errorInfo) {
+    logErrorToMyService(error, errorInfo)
+  }
 
-        render() {
-            if(this.state.hasError) {
-                return <h1>Something went wrong.</h1>
-            }
-            return this.props.children;
-        }
+  render() {
+    if (this.state.hasError) {
+      return <h1>Something went wrong.</h1>
     }
+    return this.props.children
+  }
+}
+```
 
-  ```
+### sentry 和 SourceMap 之间的使用
 
-### sentry 和 SourceMap  之间的使用
-  https://www.jianshu.com/p/66e00077fac3
-  Sentry和SourceMap是两个常用于前端错误监控和调试的工具，它们可以结合使用来更好地追踪和解决前端代码中的错误。
+https://www.jianshu.com/p/66e00077fac3
+Sentry 和 SourceMap 是两个常用于前端错误监控和调试的工具，它们可以结合使用来更好地追踪和解决前端代码中的错误。
 
-  Sentry是一款开源的错误监控平台，可以帮助开发人员捕获和报告前端和后端的错误。它提供了丰富的错误信息和堆栈跟踪，能够帮助开发人员快速定位和修复问题。Sentry还支持集成到多种前端框架和工具中，如Vue、React、Angular等，以便更好地捕获和处理错误。
+Sentry 是一款开源的错误监控平台，可以帮助开发人员捕获和报告前端和后端的错误。它提供了丰富的错误信息和堆栈跟踪，能够帮助开发人员快速定位和修复问题。Sentry 还支持集成到多种前端框架和工具中，如 Vue、React、Angular 等，以便更好地捕获和处理错误。
 
-  SourceMap是一种用于将编译后的代码映射回原始源代码的文件。在前端开发中，为了提高性能和加载速度，通常会将JavaScript、CSS等代码进行压缩和合并。这样会导致在出现错误时难以定位到源代码中的具体位置。SourceMap的作用就是提供了一个映射关系，将压缩后的代码位置映射回源代码中的位置，从而方便调试和错误追踪。
+SourceMap 是一种用于将编译后的代码映射回原始源代码的文件。在前端开发中，为了提高性能和加载速度，通常会将 JavaScript、CSS 等代码进行压缩和合并。这样会导致在出现错误时难以定位到源代码中的具体位置。SourceMap 的作用就是提供了一个映射关系，将压缩后的代码位置映射回源代码中的位置，从而方便调试和错误追踪。
 
-  结合使用Sentry和SourceMap，可以实现以下步骤：
+结合使用 Sentry 和 SourceMap，可以实现以下步骤：
 
-  1. 生成SourceMap文件：在构建过程中生成对应的SourceMap文件，通常是在压缩和合并代码的过程中生成。
+1. 生成 SourceMap 文件：在构建过程中生成对应的 SourceMap 文件，通常是在压缩和合并代码的过程中生成。
 
-  2. 部署SourceMap文件：将生成的SourceMap文件部署到服务器上，确保它可以被访问到。
+2. 部署 SourceMap 文件：将生成的 SourceMap 文件部署到服务器上，确保它可以被访问到。
 
-  3. 配置Sentry：在Sentry中创建项目并获取对应的DSN（Data Source Name）。
+3. 配置 Sentry：在 Sentry 中创建项目并获取对应的 DSN（Data Source Name）。
 
-  4. 集成Sentry和SourceMap：将Sentry的客户端SDK集成到前端应用中，并配置相关参数，包括DSN和SourceMap的URL。
+4. 集成 Sentry 和 SourceMap：将 Sentry 的客户端 SDK 集成到前端应用中，并配置相关参数，包括 DSN 和 SourceMap 的 URL。
 
-  5. 错误监控和调试：当前端应用出现错误时，Sentry会捕获错误信息，并根据SourceMap映射将错误定位到源代码的位置。开发人员可以在Sentry的控制台中查看错误报告，包括错误信息、堆栈跟踪和源代码位置。
+5. 错误监控和调试：当前端应用出现错误时，Sentry 会捕获错误信息，并根据 SourceMap 映射将错误定位到源代码的位置。开发人员可以在 Sentry 的控制台中查看错误报告，包括错误信息、堆栈跟踪和源代码位置。
 
-  通过使用Sentry和SourceMap的组合，开发人员可以更快速地定位和解决前端代码中的错误，提高应用的质量和稳定性。
-### CORS跨域资源共享
-  ### 简单请求和非简单请求
-  - 简单请求：就先执行服务端程序，然后浏览器才会判断是否跨域；
-  - 非简单请求： 浏览器会在发送实际请求之前先发送一个OPTIONS的HTTP请求来判断服务器是否能接受该跨域请求；如果不能接受的话，浏览器会直接阻止接下来实际请求的发生。
+通过使用 Sentry 和 SourceMap 的组合，开发人员可以更快速地定位和解决前端代码中的错误，提高应用的质量和稳定性。
 
+### CORS 跨域资源共享
+
+### 简单请求和非简单请求
+
+- 简单请求：就先执行服务端程序，然后浏览器才会判断是否跨域；
+- 非简单请求： 浏览器会在发送实际请求之前先发送一个 OPTIONS 的 HTTP 请求来判断服务器是否能接受该跨域请求；如果不能接受的话，浏览器会直接阻止接下来实际请求的发生。
 
 ### 同一页面三个组件请求同一个 API 发送了三次请求，如何优化
 
-  ```js
-    const fetchUser = (id) => {
-      return new Promise((resolve) => {
-        setTimeout(() => {
-          console.log("Fetch: ", id);
-          resolve(id);
-        }, 5000);
-      });
-    };
-    
-    const cache = {};
-    const cacheFetchUser = (id) => {
-      if (cache[id]) {
-        return cache[id];
-      }
-      cache[id] = fetchUser(id);
-      return cache[id];
-    };
+```js
+const fetchUser = (id) => {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      console.log('Fetch: ', id)
+      resolve(id)
+    }, 5000)
+  })
+}
 
-    cacheFetchUser(3).then((id) => console.log(id))
-    cacheFetchUser(3).then((id) => console.log(id))
-    cacheFetchUser(3).then((id) => console.log(id))
-  ```
+const cache = {}
+const cacheFetchUser = (id) => {
+  if (cache[id]) {
+    return cache[id]
+  }
+  cache[id] = fetchUser(id)
+  return cache[id]
+}
+
+cacheFetchUser(3).then((id) => console.log(id))
+cacheFetchUser(3).then((id) => console.log(id))
+cacheFetchUser(3).then((id) => console.log(id))
+```
+
+
+### 个人职业规划
+1. 近期： 把重点放在功罪上， 希望自己功罪稳定， ，同时也希望能到咱们公司工作， 会快速融入公司，了解所用技术，踏踏实实吧工作开展起来
+2. 三年： 未来三年在公司中潜心工作与学习， 先把工作做好，同时让自己技术提升更高的台阶（具体展开说下）， 踏踏实实做好技术， 同时提高自身综合素质
+3. 五年： 
+
+
+### 有什么想问下公司的
+  1. 具体负责哪个方面的
+  2. 能来公司，我在技术方便需要提前关注哪些，或者学习哪些
+  3. 公司的未来发展
