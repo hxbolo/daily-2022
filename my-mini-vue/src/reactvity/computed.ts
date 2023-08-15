@@ -22,7 +22,7 @@ class ComputedRefImpl {
     // 2. 调用run 把值返回出去  
 
     // 内部依赖响应式发生变化
-    // 1. 触发依赖trigger，执行 scheduler
+    // 1. 触发依赖trigger，执行 scheduler ，打开变量值
 
 
     if (this._dirty) {
