@@ -14,6 +14,67 @@
   2. 如果想要判断一个对象的具体类型可以考虑用 instanceof，但是 instanceof 也可能判断不准确，比如一个数组，他可以被 instanceof 判断为 Object。
   3. 准确的判断对象实例的类型时，可以采取 Object.prototype.toString.call 方法。
 
+  ## 隐式转换
+
+        JavaScript 引擎会根据以下规则来进行类型转换：
+        1. 如果期望转换为字符串，会尝试调用对象的 toString() 方法，并返回其结果。
+        2. 如果期望转换为数字，会尝试调用对象的 valueOf() 方法，并返回其结果。
+        3. 如果上述两个方法返回的结果都不是原始值，则抛出一个 TypeError 异常。
+
+  1. 对于值类型数据(又叫基本类型)场景
+
+     - toString 方法对于值类型数据使用而言，其效果相当于类型转换，**将原类型转为字符串**。
+     - valueOf 方法对于值类型数据使用而言，其效果将相当于**返回原数据**。
+
+     ```js
+     console.log(typeof str.valueOf() + '_' + str.valueOf()) //string_hello
+
+     console.log(typeof n.valueOf() + '_' + n.valueOf()) //string_123
+     console.log(typeof bool.valueOf() + '_' + bool.valueOf()) //string_true
+
+     console.log(str.valueOf === str) // // true
+     console.log(n.valueOf === n) // // true
+     console.log(bool.valueOf() === bool) // true
+     ```
+
+  2. 引用类型数据使用 toString 及 valueOf 方法
+
+     ```js
+     var obj = {}
+
+     console.log(obj.toString()) //[object Object] 返回对象类型
+     console.log(obj.valueOf()) //{} 返回对象本身
+     ```
+
+  - 总结
+
+    1. 在进行字符串强转时候，优先调用 toString()方法。在进行数值运算的时候，优先调用 valueOf 方法。
+    2. 再有运算符的情况下，valueOf 的优先级要高于 toString()方法。
+
+  - Symbol.toPrimitive 一个可被自定义操作的对象属性，用于定义对象在被转换为原始值时的行为。
+    Symbol.toPrimitive 被调用时,会接受一个字符串参数，表示当前运算的模式，一个有三种模式。
+
+    - Number:该场合需要转成数值
+    - String:该场合需要转成字符串
+    - Default:该场合可以转成数值，也可以转成字符串
+
+    ```js
+    let user = {
+      name: 'John',
+      money: 1000,
+      [Symbol.toPrimitive](hint) {
+        // hint = "string"、"number" 和 "default" 中的一个
+        return hint == 'string' ? `{name: "${this.name}"}` : this.money
+      },
+    }
+
+    // 转换演示：
+    console.log(user) // hint: string -> {name: "John"}
+    console.log(+user, typeof +user) // hint: number -> 1000
+    console.log(user + 500) // hint: default -> 1500
+    console.log(user + '300', typeof (user + '300')) //hint: string -> 1000300
+    ```
+
 ## instanceof 实现原理
 
     - instanceof 来判断对象的具体类型，其实 instanceof 主要的作用就是判断一个实例是否属于某种类型
@@ -39,25 +100,25 @@
 
 ## 原型原型链
 
-    1. __proto__、 constructor属性是对象所独有的；
-    2. prototype属性是函数独有的；
-    3. 上面说过js中函数也是对象的一种，那么函数同样也有属性__proto__、 constructor；
-    ```js
-      function Person(name, age){
-        this.name = name;
-        this.age = age;
-      }
+  1. __proto__、 constructor属性是对象所独有的；
+  2. prototype属性是函数独有的；
+  3. 上面说过js中函数也是对象的一种，那么函数同样也有属性__proto__、 constructor；
+  ```js
+    function Person(name, age){
+      this.name = name;
+      this.age = age;
+    }
 
-      Person.prototype.motherland = 'China'
+    Person.prototype.motherland = 'China'
 
-      let person01 = new Person('小明', 18)
+    let person01 = new Person('小明', 18)
 
-      Person.prototype.constructor == Person // **准则1：原型对象（即Person.prototype）的constructor指向构造函数本身**
-      person01.__proto__ == Person.prototype // **准则2：实例（即person01）的__proto__和原型对象指向同一个地方**
+    Person.prototype.constructor == Person // **准则1：原型对象（即Person.prototype）的constructor指向构造函数本身**
+    person01.__proto__ == Person.prototype // **准则2：实例（即person01）的__proto__和原型对象指向同一个地方**
 
-      console.log(Person.prototype.constructor == Person);
-      console.log(person01.__proto__ == Person.prototype);
-    ```
+    console.log(Person.prototype.constructor == Person);
+    console.log(person01.__proto__ == Person.prototype);
+  ```
 
 ## 作用域作用域链
 
@@ -94,31 +155,31 @@
 
 ## 异步 js 是单线程，为啥可以高并发(如何可以请求异步)
 
-    1. 异步编程模型：JavaScript 通过使用回调函数、Promise、async/await 等机制实现了异步编程模型。这使得在执行耗时操作时，可以将任务交给其他线程或进程处理，JavaScript 主线程可以继续执行其他任务，从而提高并发性能。
+  1. 异步编程模型：JavaScript 通过使用回调函数、Promise、async/await 等机制实现了异步编程模型。这使得在执行耗时操作时，可以将任务交给其他线程或进程处理，JavaScript 主线程可以继续执行其他任务，从而提高并发性能。
 
-    2. 非阻塞 I/O：JavaScript 在浏览器环境中运行时，可以利用浏览器提供的异步 API（如 Ajax 请求、定时器、事件处理等）来实现非阻塞 I/O 操作。这样，当一个异步操作进行时，JavaScript 主线程不会被阻塞，可以继续处理其他任务，从而提高并发性能。
+  2. 非阻塞 I/O：JavaScript 在浏览器环境中运行时，可以利用浏览器提供的异步 API（如 Ajax 请求、定时器、事件处理等）来实现非阻塞 I/O 操作。这样，当一个异步操作进行时，JavaScript 主线程不会被阻塞，可以继续处理其他任务，从而提高并发性能。
 
-    3. 事件驱动机制：JavaScript 基于事件驱动的机制，通过事件循环（Event Loop）来处理事件和回调函数。这种机制使得 JavaScript 能够高效地处理大量的并发事件，因为它在单线程中按照事件的发生顺序依次处理事件，而不需要创建多个线程。
+  3. 事件驱动机制：JavaScript 基于事件驱动的机制，通过事件循环（Event Loop）来处理事件和回调函数。这种机制使得 JavaScript 能够高效地处理大量的并发事件，因为它在单线程中按照事件的发生顺序依次处理事件，而不需要创建多个线程。
 
-    4. Web Workers：JavaScript 提供了 Web Workers API，它允许在后台创建多个工作线程，用于执行一些耗时的计算任务，从而释放主线程，提高并发性能。这样，JavaScript 可以在主线程和工作线程之间进行任务分配和协同工作。
+  4. Web Workers：JavaScript 提供了 Web Workers API，它允许在后台创建多个工作线程，用于执行一些耗时的计算任务，从而释放主线程，提高并发性能。这样，JavaScript 可以在主线程和工作线程之间进行任务分配和协同工作。
 
-    ### eventloop
-      1. 事件队列（Event Queue）：事件队列是一个先进先出的队列，用于存储待处理的事件和回调函数。当事件发生时，相关的回调函数会被添加到事件队列中。
+  ### eventloop
+    1. 事件队列（Event Queue）：事件队列是一个先进先出的队列，用于存储待处理的事件和回调函数。当事件发生时，相关的回调函数会被添加到事件队列中。
 
-      2. 主线程（Main Thread）：JavaScript 运行时中的主线程负责执行同步的 JavaScript 代码和处理事件循环。它会不断地从事件队列中取出事件，执行相应的回调函数。
+    2. 主线程（Main Thread）：JavaScript 运行时中的主线程负责执行同步的 JavaScript 代码和处理事件循环。它会不断地从事件队列中取出事件，执行相应的回调函数。
 
-      3. 宏任务（Macro Task）：宏任务代表一个独立的、完整的任务单元。宏任务可以是用户交互、定时器回调、Ajax 请求等。每个宏任务会在事件循环的一轮中执行完毕后，才会执行下一个宏任务。
+    3. 宏任务（Macro Task）：宏任务代表一个独立的、完整的任务单元。宏任务可以是用户交互、定时器回调、Ajax 请求等。每个宏任务会在事件循环的一轮中执行完毕后，才会执行下一个宏任务。
 
-      4. 微任务（Micro Task）：微任务是宏任务的一部分，它代表一个更小的任务单元。微任务通常是由 Promise 的回调函数、MutationObserver 或 process.nextTick（在 Node.js 环境下）等创建的。微任务会在当前宏任务执行结束后立即执行。
+    4. 微任务（Micro Task）：微任务是宏任务的一部分，它代表一个更小的任务单元。微任务通常是由 Promise 的回调函数、MutationObserver 或 process.nextTick（在 Node.js 环境下）等创建的。微任务会在当前宏任务执行结束后立即执行。
 
-      5. Event Loop 的执行过程：
-        - 执行当前宏任务中的同步代码。
-        - 检查微任务队列，如果存在微任务，则依次执行所有微任务，直到微任务队列为空。
-        - 更新渲染（如果需要）。
-        - 从事件队列中取出一个宏任务并执行。
-        - 重复上述步骤，直到事件队列和微任务队列都为空。
+    5. Event Loop 的执行过程：
+      - 执行当前宏任务中的同步代码。
+      - 检查微任务队列，如果存在微任务，则依次执行所有微任务，直到微任务队列为空。
+      - 更新渲染（如果需要）。
+      - 从事件队列中取出一个宏任务并执行。
+      - 重复上述步骤，直到事件队列和微任务队列都为空。
 
-      6. 宏任务与微任务的顺序：每次执行一个宏任务后，都会先执行完当前宏任务中的所有微任务，然后再执行下一个宏任务。
+    6. 宏任务与微任务的顺序：每次执行一个宏任务后，都会先执行完当前宏任务中的所有微任务，然后再执行下一个宏任务。
 
 ## 浏览器回收机制
 
@@ -218,29 +279,33 @@
 
 ### http 1.0 、1.1、 2.0 发展史
 
-    1. 连接复用性:
-      - HTTP/1.0: 每个请求和响应都需要建立一个新的TCP连接，导致性能较低。
-      - HTTP/1.1: 引入了持久连接（Keep-Alive），允许在单个TCP连接上传输多个请求和响应，提高了性能。
-      - HTTP/2.0: 支持多路复用（Multiplexing），允许在单个TCP连接上同时传输多个请求和响应，减少了延迟。
+1. 连接复用性:
 
-    2. 请求和响应的处理方式:
-      - HTTP/1.0: 请求和响应之间是按序处理的，即一个请求的响应必须完全接收后才能发送下一个请求。
-      - HTTP/1.1和HTTP/2.0: 支持管道化（Pipelining），允许在一个TCP连接上同时发送多个请求和响应。
+   - HTTP/1.0: 每个请求和响应都需要建立一个新的 TCP 连接，导致性能较低。
+   - HTTP/1.1: 引入了持久连接（Keep-Alive），允许在单个 TCP 连接上传输多个请求和响应，提高了性能。（资源加载是**串行**）
+   - HTTP/2.0: 支持多路复用（Multiplexing），允许在单个 TCP 连接上同时传输多个请求和响应，减少了延迟。(多工：资源加载**并行** )
 
-    3. 二进制传输:
-      - HTTP/1.0和HTTP/1.1: 使用文本格式传输数据。
-      - HTTP/2.0: 引入了二进制传输，将HTTP消息分解为二进制帧进行传输，提高了传输效率。
+2. 请求和响应的处理方式:
 
-    4. 头部压缩:
-      - HTTP/1.0和HTTP/1.1: 每个请求和响应的Header信息都需要重复传输，增加了数据传输量。
-      - HTTP/2.0: 引入了头部压缩技术，可以减少Header信息的传输大小。
+   - HTTP/1.0: 请求和响应之间是按序处理的，即一个请求的响应必须完全接收后才能发送下一个请求。
+   - HTTP/1.1 和 HTTP/2.0: 支持管道化（Pipelining），允许在一个 TCP 连接上同时发送多个请求和响应。
 
-    5. 服务器推送:
-      - HTTP/1.0和HTTP/1.1: 服务器无法主动向客户端推送数据。
-      - HTTP/2.0: 支持服务器推送（Server Push），服务器可以主动将响应的资源推送给客户端，减少客户端的请求次数。
+3. 二进制传输:
 
-    总体而言，HTTP/1.0、HTTP/1.1和HTTP/2.0在性能、传输效率和功能特性上有不同程度的改进和优化。HTTP/2.0相对于HTTP/1.x版本具有更高的性能和效率，能够更好地满足现代Web应用的需求。
+   - HTTP/1.0 和 HTTP/1.1: 使用文本格式传输数据。
+   - HTTP/2.0: 引入了二进制传输，将 HTTP 消息分解为二进制帧进行传输，提高了传输效率。
 
+4. 头部压缩:
+
+   - HTTP/1.0 和 HTTP/1.1: 每个请求和响应的 Header 信息都需要重复传输，增加了数据传输量。
+   - HTTP/2.0: 引入了头部压缩技术，可以减少 Header 信息的传输大小。
+
+5. 服务器推送:
+
+   - HTTP/1.0 和 HTTP/1.1: 服务器无法主动向客户端推送数据。
+   - HTTP/2.0: 支持服务器推送（Server Push），服务器可以主动将响应的资源推送给客户端，减少客户端的请求次数。
+
+总体而言，HTTP/1.0、HTTP/1.1 和 HTTP/2.0 在性能、传输效率和功能特性上有不同程度的改进和优化。HTTP/2.0 相对于 HTTP/1.x 版本具有更高的性能和效率，能够更好地满足现代 Web 应用的需求。
 
     1. 连接复用性
       - 1.0 每个请求和响应都需要建立一个新的tcp链接，
@@ -760,6 +825,78 @@ Webpack 的运行流程是一个串行的过程，从启动到结束会依次执
 
 ## js 性能优化
 
+### DNS 解析
+
+- 减少 DNS 请求
+- DNS-prefetch（ DNS 预解析 ）
+  1. dns-prefetch 仅对跨域上的 dns 查找有效， 避免使用他来指向您站点的域名，因为到浏览器看到提示时， 你的站点域背后的 ip 已经被解析
+  2. DNS-prefetch 慎用， 多页面重复 DNS-prefetch 会增加重复 dns 查询次数
+  3.
+
+```h
+  // 提高资源并发数
+  <link rel="dns-prefetch" herf="xxxxxx">
+```
+
+### http 长链接
+
+    - http1.1有长链接
+    - http 管道机制
+
+### 渲染优化
+
+1. 优化 cssom
+
+   - 阻塞渲染的 css
+     ```html
+     <!-- 阻塞渲染 -->
+     <link herf="style.css" rel="stylesheet" />
+     <!-- 非阻塞渲染-->
+     <link herf="printe.css" rel="stylesheet" media="print" />
+     <!-- 拆分媒体查询相关  css资源： 可变阻塞加载-->
+     <link herf="other.css" rel="stylesheet" media="(min-width):em" />
+     ```
+   - 避免在 css 中使用@import
+     ```css
+       <!-- 会增加资源的路径 -->
+       @import url("mian.css")
+     ```
+
+   2. 优化 js 的使用
+
+    - 异步加载 js
+
+      - 使用 defer 延迟加载 js 异步并行加载 同时保证顺序
+        ```html
+        <script defer src="index.js"></script>
+        ```
+      - 使用 async 延迟加载 js 异步并行加载 不能保证加载顺序
+
+        ```html
+        <script async src="index.js"></script>
+        ```
+
+      - 使用空闲时间加载指定资源
+
+        ```html
+        <link ref="preload" href="index.js" />
+
+        <body>
+          <p>1111</p>
+          <script src="index.js"></script>
+        </body>
+        ```
+
+    - 避免同步加载
+  2. js执行优化
+    1. 实现动画效果  
+      window.requestAnimationFrame()和setInterval相比，优势是将回调函数执行实际有系统决定
+    2. 恰当使用web worker 
+    3. 事件的节流防抖
+      1. debounce 防抖  清除定时器
+      2. throttle 节流  上一次时间和当前时间对比，触发 
+    3. 减少计算样式的元素数量
+  3. 页面布局和重绘
 ### 内存管理
 
 - 内存管理概念
@@ -1122,3 +1259,11 @@ JSBridge 的实现原理如下：
 4. 开发成本：传统 H5 页面开发相对简单，使用 Web 技术开发即可，而小程序开发需要使用特定的开发语言（如微信小程序使用的 WXML 和 WXSS），并遵循小程序的开发规范，因此可能会有一些额外的学习成本。
 
 5. 体验流畅度：小程序在用户体验方面更为流畅，因为它的界面交互更接近原生应用，而传统 H5 页面可能存在一些滚动卡顿、界面闪烁等问题。
+
+
+# 微前端
+  1. 拆分巨型应用， 使应用变得更加可维护
+  2. 兼容历史应用， 实现增量开发
+
+  ### 如何是实现微应用
+    
