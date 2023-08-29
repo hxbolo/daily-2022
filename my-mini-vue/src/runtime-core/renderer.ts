@@ -25,7 +25,8 @@ function processElement(vnode: any, container: any) {
 }
 
 function mountElement(vnode: any, container: any) {
-  const el = document.createElement(vnode.type)
+  // vnode =》 属于 element  -> div
+  const el = (vnode.el = document.createElement(vnode.type))
 
   // string array
   const { children } = vnode
@@ -58,18 +59,24 @@ function processComponent(vnode: any, container: any) {
   mountComponent(vnode, container)
 }
 
-function mountComponent(vnode: any, container) {
+function mountComponent(initialVNode: any, container) {
   //创建组件实例
-  const instance = creatComponentInstance(vnode)
+  const instance = creatComponentInstance(initialVNode)
 
   setupComponent(instance)
-  setupRenderEffect(instance, container)
+  setupRenderEffect(instance, initialVNode, container)
 }
 
-function setupRenderEffect(instance, container) {
+function setupRenderEffect(instance, initialVNode, container) {
+  const { proxy } = instance
+
   // 虚拟节点树
-  const subTree = instance.render()
+  const subTree = instance.render.call(proxy)
   // vnode -> patch
   // vnode -> element -> mounElement
   patch(subTree, container)
+
+  // element => mount
+  // // 把 root element 赋值给 组件的vnode.el ，为后续调用 $el 的时候获取值ƒ
+  initialVNode.el = subTree.el
 }
