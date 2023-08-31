@@ -3,17 +3,26 @@ import { h } from '../../lib/guide-mini-vue.esm.js'
 window.self = null
 export const App = {
   render() {
-    window.self  = this
+    window.self = this
     // ui
     return h(
       'div',
-      { id: 'root', class: ['red', 'hard'] },
+      {
+        id: 'root',
+        class: ['red', 'hard'],
+        onClick() {
+          console.log('click')
+        },
+        onMouseDown(){
+          console.log('onMouseDown');
+        }
+      },
       // string
       // setupstate : 取值  通过proxy
-      
+
       // this.$el => 返回 get root element
-      
-      'hi,'+ this.msg,
+
+      'hi,' + this.msg
       // 'hi,mini-vue',
 
       // array

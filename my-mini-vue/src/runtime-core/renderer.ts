@@ -1,3 +1,4 @@
+import { ShapeFlags } from '../shared/ShapeFlags'
 import { isObject } from './../shared/index'
 import { creatComponentInstance, setupComponent } from './component'
 
@@ -10,9 +11,10 @@ function patch(vnode, container) {
   // 处理组件
   // 判断vnode 是不是一个element
   // 是element处理 element
-  if (typeof vnode.type === 'string') {
+  const { shapeFlag } = vnode
+  if (shapeFlag & ShapeFlags.ELEMENT) {
     processElement(vnode, container)
-  } else if (isObject(vnode.type)) {
+  } else if (shapeFlag & ShapeFlags.STATEFUL_COMPONENT) {
     //组件 object
     processComponent(vnode, container)
   }
@@ -29,11 +31,13 @@ function mountElement(vnode: any, container: any) {
   const el = (vnode.el = document.createElement(vnode.type))
 
   // string array
-  const { children } = vnode
+  const { children, shapeFlag } = vnode
 
-  if (typeof children === 'string') {
+  if (shapeFlag & ShapeFlags.TEXT_CHILDREN) {
+    // text_children
     el.textContent = children
-  } else if (Array.isArray(children)) {
+  } else if (shapeFlag & ShapeFlags.ARRAY_CHILDREN) {
+    // array_children
     mountChildren(vnode, el)
   }
 
@@ -42,7 +46,17 @@ function mountElement(vnode: any, container: any) {
   console.log(vnode)
 
   for (const key in props) {
+    console.log(key)
+
     const val = props[key]
+    // 点击事件具体click => 通用
+    // 命名规划 on+ Event name
+    const isOn = (key: string) => /^on[A-Z]/.test(key)
+    if (isOn(key)) {
+      const event = key.slice(2).toLocaleLowerCase()
+      el.addEventListener(event, val)
+    }
+
     el.setAttribute(key, val)
   }
   container.append(el)

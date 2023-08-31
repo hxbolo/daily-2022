@@ -2,10 +2,6 @@
 
 Object.defineProperty(exports, '__esModule', { value: true });
 
-const isObject = (val) => {
-    return val !== null && typeof val === 'object';
-};
-
 const publicPropertiesMap = {
     $el: (i) => i.vnode.el,
 };
@@ -72,10 +68,11 @@ function patch(vnode, container) {
     // 处理组件
     // 判断vnode 是不是一个element
     // 是element处理 element
-    if (typeof vnode.type === 'string') {
+    const { shapeFlag } = vnode;
+    if (shapeFlag & 1 /* ShapeFlags.ELEMENT */) {
         processElement(vnode, container);
     }
-    else if (isObject(vnode.type)) {
+    else if (shapeFlag & 4 /* ShapeFlags.STATEFUL_COMPONENT */) {
         //组件 object
         processComponent(vnode, container);
     }
@@ -89,18 +86,28 @@ function mountElement(vnode, container) {
     // vnode =》 属于 element  -> div
     const el = (vnode.el = document.createElement(vnode.type));
     // string array
-    const { children } = vnode;
-    if (typeof children === 'string') {
+    const { children, shapeFlag } = vnode;
+    if (shapeFlag & 8 /* ShapeFlags.TEXT_CHILDREN */) {
+        // text_children
         el.textContent = children;
     }
-    else if (Array.isArray(children)) {
+    else if (shapeFlag & 16 /* ShapeFlags.ARRAY_CHILDREN */) {
+        // array_children
         mountChildren(vnode, el);
     }
     // props
     const { props } = vnode;
     console.log(vnode);
     for (const key in props) {
+        console.log(key);
         const val = props[key];
+        // 点击事件具体click => 通用
+        // 命名规划 on+ Event name
+        const isOn = (key) => /^on[A-Z]/.test(key);
+        if (isOn(key)) {
+            const event = key.slice(2).toLocaleLowerCase();
+            el.addEventListener(event, val);
+        }
         el.setAttribute(key, val);
     }
     container.append(el);
@@ -138,8 +145,18 @@ function createVNode(type, props, children) {
         props,
         children,
         el: null,
+        shapeFlag: getShapFlag(type)
     };
+    if (typeof children == 'string') {
+        vnode.shapeFlag |= 8 /* ShapeFlags.TEXT_CHILDREN */;
+    }
+    else if (Array.isArray(children)) {
+        vnode.shapeFlag |= 16 /* ShapeFlags.ARRAY_CHILDREN */;
+    }
     return vnode;
+}
+function getShapFlag(type) {
+    return typeof type === 'string' ? 1 /* ShapeFlags.ELEMENT */ : 4 /* ShapeFlags.STATEFUL_COMPONENT */;
 }
 
 function createApp(rootComponent) {
