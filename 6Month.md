@@ -506,7 +506,7 @@ console.log(person01.__proto__ == Person.prototype)
 ### vue2.0 原理
 
   通过数据劫持和发布订阅模式的方式通过object.defineProperty()来劫持各个属性的个getter setter , 在数据发生变化是发布消息给订阅者触发监听
-  1. observe是对数据的劫持： 需要把data数据递归遍历包括各个子属性通过object.defineProperty()来劫持数据转换成个getter 和 setter， 添加订阅器（dep） 和watcherd 依赖关系，当数据发生变化发生通知
+  1. observe是对数据的劫持： 需要把data数据递归遍历包括各个子属性通过object.defineProperty()来劫持数据转换成个getter 和 setter， 添加订阅器（dep） 和watcherd 依赖关系，当数据发生变化发送通知
   2. compiler: 负责编译模板，解析指令，差值表达式，负责页面的首次渲染，当数据发生变化，收到通知，更新视图
   3. wathch: 订阅者是observe和compiler之间的桥梁， 主要做的是
     ①自身实例化的时候往dep对象中添加自己

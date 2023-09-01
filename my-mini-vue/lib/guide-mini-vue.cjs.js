@@ -2,15 +2,146 @@
 
 Object.defineProperty(exports, '__esModule', { value: true });
 
+const extend = Object.assign;
+const isObject = (val) => {
+    return val !== null && typeof val === 'object';
+};
+function hasOwn(val, key) {
+    return Object.prototype.hasOwnProperty.call(val, key);
+}
+// add-foo => addFoo
+const camelize = (str) => {
+    return str.replace(/-(\w)/g, (_, c) => {
+        return c ? c.toUpperCase() : '';
+    });
+};
+// add => Add
+const capitalize = (str) => {
+    return str.charAt(0).toUpperCase() + str.slice(1);
+};
+const toHandlerKey = (str) => {
+    return str ? 'on' + capitalize(str) : '';
+};
+
+// 收集依赖
+const targetMap = new Map();
+// 触发依赖 更新
+function trigger(target, key) {
+    let depsMap = targetMap.get(target);
+    let dep = depsMap.get(key);
+    triggerEffect(dep);
+}
+function triggerEffect(dep) {
+    for (const effect of dep) {
+        if (effect.scheduler) {
+            effect.scheduler();
+        }
+        else {
+            effect.run();
+        }
+    }
+}
+
+// 优化： 只会在初始化调用一次
+const get = creatGetter();
+const set = creatSetter();
+const readonlyGet = creatGetter(true);
+const shallowReadonlyGet = creatGetter(true, true);
+function creatGetter(isReadonly = false, shallow = false) {
+    return function get(target, key) {
+        if (key === "_v_isReactive" /* ReactiveFlages.IS_REACTIVE */) {
+            return !isReadonly;
+        }
+        else if (key === "_v_isReadonly" /* ReactiveFlages.IS_READONLY */) {
+            return isReadonly;
+        }
+        const res = Reflect.get(target, key);
+        // shallowReadonly ：创建一个浅层只读代理对象
+        if (shallow) {
+            return res;
+        }
+        // 嵌套reactive
+        // 判断res   是不是  object
+        if (isObject(res)) {
+            return isReadonly ? readonly(res) : reactive(res);
+        }
+        return res;
+    };
+}
+function creatSetter() {
+    return function set(target, key, value) {
+        const res = Reflect.set(target, key, value);
+        // 触发依赖
+        trigger(target, key);
+        return res;
+    };
+}
+const mutableHandlers = {
+    get,
+    set,
+};
+const readonlyHandlers = {
+    get: readonlyGet,
+    set(target, key, value) {
+        console.warn(`key:${key} set 失败， 因为 target是 readonly`, target);
+        return true;
+    },
+};
+const shallowReadonlyHandlers = extend({}, readonlyHandlers, {
+    get: shallowReadonlyGet,
+    set(target, key, value) {
+        console.warn(`key:${key} set 失败， 因为 target是 readonly`, target);
+        return true;
+    },
+});
+
+function reactive(raw) {
+    return creatActiveObject(raw, mutableHandlers);
+}
+function readonly(raw) {
+    return creatActiveObject(raw, readonlyHandlers);
+}
+function shallowReadonly(raw) {
+    return creatActiveObject(raw, shallowReadonlyHandlers);
+}
+function creatActiveObject(target, baseHandles) {
+    if (!isObject(target)) {
+        console.warn(`target ${target}必须是一个对象`);
+        return target;
+    }
+    return new Proxy(target, baseHandles);
+}
+
+function emit(instance, event, ...args) {
+    console.log('emit---', event);
+    // instance.props => event
+    const { props } = instance;
+    // TPP  先写特定的行为-》 通用
+    const handlerName = toHandlerKey(camelize(event));
+    const handler = props[handlerName];
+    handler && handler(...args);
+}
+
+function initProps(instance, rawProps) {
+    instance.props = rawProps || {};
+    // attrs
+}
+
 const publicPropertiesMap = {
     $el: (i) => i.vnode.el,
 };
 const PublicInstanceProxyHandlers = {
     get({ _: instance }, key) {
         // setupstate
-        const { setupState } = instance;
+        const { setupState, props } = instance;
         if (key in setupState) {
             return setupState[key];
+        }
+        if (hasOwn(setupState, key)) {
+            return setupState[key];
+        }
+        else if (hasOwn(props, key)) {
+            return props[key];
         }
         // $el
         const publicGetter = publicPropertiesMap[key];
@@ -25,11 +156,14 @@ function creatComponentInstance(vnode) {
         vnode,
         type: vnode.type,
         setupState: {},
+        props: {},
+        emit: () => { }
     };
+    component.emit = emit.bind(null, component);
     return component;
 }
 function setupComponent(instance) {
-    // initProps()
+    initProps(instance, instance.vnode.props);
     // initSlots()
     // 初始化一个有状态的component
     setupStatefulComponen(instance);
@@ -41,7 +175,7 @@ function setupStatefulComponen(instance) {
     instance.proxy = new Proxy({ _: instance }, PublicInstanceProxyHandlers);
     const { setup } = Component;
     if (setup) {
-        const setupResult = setup();
+        const setupResult = setup(shallowReadonly(instance.props), { emit: instance.emit });
         handleSetupResult(instance, setupResult);
     }
 }

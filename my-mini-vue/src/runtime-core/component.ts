@@ -1,16 +1,23 @@
-import { PublicInstanceProxyHandlers } from "./componentPublicInstance"
+
+import { shallowReadonly } from '../reactvity/reactive'
+import { emit } from './componentEmit'
+import { initProps } from './componentProps'
+import { PublicInstanceProxyHandlers } from './componentPublicInstance'
 
 export function creatComponentInstance(vnode) {
   const component = {
     vnode,
     type: vnode.type,
     setupState: {},
+    props: {},
+    emit:() =>{}
   }
+  component.emit = emit.bind(null, component) as any
   return component
 }
 
 export function setupComponent(instance) {
-  // initProps()
+  initProps(instance, instance.vnode.props)
   // initSlots()
 
   // 初始化一个有状态的component
@@ -23,14 +30,11 @@ function setupStatefulComponen(instance: any) {
   // 初始化
 
   // ctx
-  instance.proxy = new Proxy(
-    {_:instance},
-    PublicInstanceProxyHandlers
-  )
+  instance.proxy = new Proxy({ _: instance }, PublicInstanceProxyHandlers)
 
   const { setup } = Component
   if (setup) {
-    const setupResult = setup()
+    const setupResult = setup(shallowReadonly(instance.props), {emit: instance.emit})
     handleSetupResult(instance, setupResult)
   }
 }
