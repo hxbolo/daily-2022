@@ -129,6 +129,7 @@ function initProps(instance, rawProps) {
 
 const publicPropertiesMap = {
     $el: (i) => i.vnode.el,
+    $slots: (i) => i.slots
 };
 const PublicInstanceProxyHandlers = {
     get({ _: instance }, key) {
@@ -151,12 +152,30 @@ const PublicInstanceProxyHandlers = {
     },
 };
 
+function initSlots(instance, children) {
+    const { vnode } = instance;
+    if (vnode.shapeFlag & 32 /* ShapeFlags.SLOTS_CHILDREN */) {
+        normalizeObjectSlots(children, instance.slots);
+    }
+}
+const normalizeSlotValue = (value) => {
+    // 把 function 返回的值转换成 array ，这样 slot 就可以支持多个元素了
+    return Array.isArray(value) ? value : [value];
+};
+const normalizeObjectSlots = (children, slots) => {
+    for (let key in children) {
+        let value = children[key];
+        slots[key] = (props) => normalizeSlotValue(value(props));
+    }
+};
+
 function creatComponentInstance(vnode) {
     const component = {
         vnode,
         type: vnode.type,
         setupState: {},
         props: {},
+        slots: {},
         emit: () => { }
     };
     component.emit = emit.bind(null, component);
@@ -164,7 +183,7 @@ function creatComponentInstance(vnode) {
 }
 function setupComponent(instance) {
     initProps(instance, instance.vnode.props);
-    // initSlots()
+    initSlots(instance, instance.vnode.children);
     // 初始化一个有状态的component
     setupStatefulComponen(instance);
 }
@@ -287,6 +306,12 @@ function createVNode(type, props, children) {
     else if (Array.isArray(children)) {
         vnode.shapeFlag |= 16 /* ShapeFlags.ARRAY_CHILDREN */;
     }
+    // 组件+ children object
+    if (vnode.shapeFlag & 4 /* ShapeFlags.STATEFUL_COMPONENT */) {
+        if (typeof children === 'object') {
+            vnode.shapeFlag |= 32 /* ShapeFlags.SLOTS_CHILDREN */;
+        }
+    }
     return vnode;
 }
 function getShapFlag(type) {
@@ -309,5 +334,30 @@ function h(type, props, children) {
     return createVNode(type, props, children);
 }
 
+/**
+ * Compiler runtime helper for rendering `<slot/>`
+ * 用来 render slot 的
+ * 之前是把 slot 的数据都存在 instance.slots 内(可以看 componentSlot.ts)，
+ * 这里就是取数据然后渲染出来的点
+ * 这个是由 compiler 模块直接渲染出来的
+ * 其最终目的就是在 render 函数中调用 renderSlot 取 instance.slots 内的数据
+ * TODO 这里应该是一个返回一个 block ,但是暂时还没有支持 block ，所以这个暂时只需要返回一个 vnode 即可
+ * 因为 block 的本质就是返回一个 vnode
+ *
+ * @private
+ */
+function renderSlot(slots, name, props) {
+    const slot = slots[name];
+    if (slot) {
+        // 因为 slot 是一个返回 vnode 的函数，我们只需要把这个结果返回出去即可
+        // slot 就是一个函数，所以就可以把当前组件的一些数据给传出去，这个就是作用域插槽
+        // 参数就是 props
+        if (typeof slot == 'function') {
+            return createVNode('div', {}, slot(props));
+        }
+    }
+}
+
 exports.createApp = createApp;
 exports.h = h;
+exports.renderSlot = renderSlot;

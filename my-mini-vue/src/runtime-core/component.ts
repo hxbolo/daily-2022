@@ -3,6 +3,7 @@ import { shallowReadonly } from '../reactvity/reactive'
 import { emit } from './componentEmit'
 import { initProps } from './componentProps'
 import { PublicInstanceProxyHandlers } from './componentPublicInstance'
+import { initSlots } from './componentSlots'
 
 export function creatComponentInstance(vnode) {
   const component = {
@@ -10,6 +11,7 @@ export function creatComponentInstance(vnode) {
     type: vnode.type,
     setupState: {},
     props: {},
+    slots:{},
     emit:() =>{}
   }
   component.emit = emit.bind(null, component) as any
@@ -17,8 +19,9 @@ export function creatComponentInstance(vnode) {
 }
 
 export function setupComponent(instance) {
+
   initProps(instance, instance.vnode.props)
-  // initSlots()
+  initSlots(instance, instance.vnode.children)
 
   // 初始化一个有状态的component
   setupStatefulComponen(instance)
