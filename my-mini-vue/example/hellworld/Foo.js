@@ -1,23 +1,36 @@
-import { h, renderSlot } from '../../lib/guide-mini-vue.esm.js'
+import { h, renderSlot, getCurrentInstance } from '../../lib/guide-mini-vue.esm.js'
 
-// 案例 slot
+// 案例 getCrrentInstance
 export const Foo = {
-  setup() {},
+  setup() {
+    const instance = getCurrentInstance()
+    console.log('foo', instance);
+    return {}
+  },
   render() {
-    const foo = h('p', {}, 'foo')
-    console.log(this.$slots)
 
-    //具名插槽
-    // 1. 获取到渲染的元素
-    // 获取到渲染的元素
-    const age = 18
-    return h('div', {}, [
-      renderSlot(this.$slots, 'header', {age}),
-      foo,
-      renderSlot(this.$slots, 'footer', {age}),
-    ])
+    return h('div', {}, h('p', {}, 'foo'))
   },
 }
+
+// 案例 slot
+// export const Foo = {
+//   setup() {},
+//   render() {
+//     const foo = h('p', {}, 'foo')
+//     console.log(this.$slots)
+
+//     //具名插槽
+//     // 1. 获取到渲染的元素
+//     // 获取到渲染的元素
+//     const age = 18
+//     return h('div', {}, [
+//       renderSlot(this.$slots, 'header', {age}),
+//       foo,
+//       renderSlot(this.$slots, 'footer', {age}),
+//     ])
+//   },
+// }
 
 // 模拟prop  emit  案例
 // export const Foo = {

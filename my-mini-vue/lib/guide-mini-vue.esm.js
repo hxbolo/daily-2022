@@ -172,7 +172,7 @@ function creatComponentInstance(vnode) {
         setupState: {},
         props: {},
         slots: {},
-        emit: () => { }
+        emit: () => { },
     };
     component.emit = emit.bind(null, component);
     return component;
@@ -190,7 +190,11 @@ function setupStatefulComponen(instance) {
     instance.proxy = new Proxy({ _: instance }, PublicInstanceProxyHandlers);
     const { setup } = Component;
     if (setup) {
-        const setupResult = setup(shallowReadonly(instance.props), { emit: instance.emit });
+        setCurrentInstance(instance);
+        const setupResult = setup(shallowReadonly(instance.props), {
+            emit: instance.emit,
+        });
+        setCurrentInstance(null);
         handleSetupResult(instance, setupResult);
     }
 }
@@ -207,6 +211,13 @@ function handleSetupResult(instance, setupResult) {
 function finishComponentSetup(instance) {
     const Component = instance.type;
     instance.render = Component.render;
+}
+let currentInstance = null;
+function getCurrentInstance() {
+    return currentInstance;
+}
+function setCurrentInstance(instance) {
+    currentInstance = instance;
 }
 
 const Fragment = Symbol('Fragment');
@@ -275,7 +286,6 @@ function processFragment(vnode, container) {
     mountChildren(vnode, container);
 }
 function processText(vnode, container) {
-    debugger;
     const { children } = vnode;
     console.log('children', children);
     const textNode = (vnode.el = document.createTextNode(children));
@@ -384,4 +394,4 @@ function renderSlot(slots, name, props) {
     }
 }
 
-export { createApp, createTextVnode, h, renderSlot };
+export { createApp, createTextVnode, getCurrentInstance, h, renderSlot };

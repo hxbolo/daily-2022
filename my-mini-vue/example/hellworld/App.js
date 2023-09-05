@@ -1,35 +1,51 @@
-import { h, createTextVnode } from '../../lib/guide-mini-vue.esm.js'
+import {
+  h,
+  createTextVnode,
+  getCurrentInstance,
+} from '../../lib/guide-mini-vue.esm.js'
 import { Foo } from './Foo.js'
 
 window.self = null
- 
-// 案例：  slot
+
 export const App = {
   name: 'App',
   render() {
-    const app = h('div', {}, 'app')
-    // 单个vnode
-    // const foo = h(Foo, {}, h('p', {}, '123'))
-    // 数组类型
-    // const foo = h(Foo, {}, [h('p', {}, '123'), h('p', {}, '456')])
-    // 对象
-    const foo = h(
-      Foo,
-      {},
-      {
-        header: ({ age }) => [
-          h('p', {}, 'header' + age),
-          createTextVnode('您好呀'),
-        ],
-        footer: ({ age }) => h('p', {}, 'footer' + age),
-      }
-    )
-    return h('div', {}, [app, foo])
+    return h('div', {}, [h('p', {}, 'currnetInstance demo'), h(Foo)])
   },
   setup() {
-    return {}
+    const instance = getCurrentInstance()
+
+    console.log('app', instance)
   },
 }
+
+// 案例：  slot   text  fargment
+// export const App = {
+//   name: 'App',
+//   render() {
+//     const app = h('div', {}, 'app')
+//     // 单个vnode
+//     // const foo = h(Foo, {}, h('p', {}, '123'))
+//     // 数组类型
+//     // const foo = h(Foo, {}, [h('p', {}, '123'), h('p', {}, '456')])
+//     // 对象
+//     const foo = h(
+//       Foo,
+//       {},
+//       {
+//         header: ({ age }) => [
+//           h('p', {}, 'header' + age),
+//           createTextVnode('您好呀'),
+//         ],
+//         footer: ({ age }) => h('p', {}, 'footer' + age),
+//       }
+//     )
+//     return h('div', {}, [app, foo])
+//   },
+//   setup() {
+//     return {}
+//   },
+// }
 
 // 模拟props   emit 案例
 // export const App = {

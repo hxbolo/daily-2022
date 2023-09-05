@@ -38,7 +38,6 @@ function processFragment(vnode: any, container: any) {
   mountChildren(vnode, container)
 }
 function processText(vnode: any, container: any) {
-  debugger
   const { children } = vnode
   console.log('children', children);
   

@@ -1,4 +1,3 @@
-
 import { shallowReadonly } from '../reactvity/reactive'
 import { emit } from './componentEmit'
 import { initProps } from './componentProps'
@@ -11,15 +10,14 @@ export function creatComponentInstance(vnode) {
     type: vnode.type,
     setupState: {},
     props: {},
-    slots:{},
-    emit:() =>{}
+    slots: {},
+    emit: () => {},
   }
   component.emit = emit.bind(null, component) as any
   return component
 }
 
 export function setupComponent(instance) {
-
   initProps(instance, instance.vnode.props)
   initSlots(instance, instance.vnode.children)
 
@@ -37,7 +35,11 @@ function setupStatefulComponen(instance: any) {
 
   const { setup } = Component
   if (setup) {
-    const setupResult = setup(shallowReadonly(instance.props), {emit: instance.emit})
+    setCurrentInstance(instance)
+    const setupResult = setup(shallowReadonly(instance.props), {
+      emit: instance.emit,
+    })
+    setCurrentInstance(null)
     handleSetupResult(instance, setupResult)
   }
 }
@@ -58,4 +60,13 @@ function handleSetupResult(instance, setupResult: any) {
 function finishComponentSetup(instance: any) {
   const Component = instance.type
   instance.render = Component.render
+}
+
+let currentInstance = null
+export function getCurrentInstance() {
+  return currentInstance
+}
+
+export function setCurrentInstance(instance) {
+  currentInstance = instance
 }
