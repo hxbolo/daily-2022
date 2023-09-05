@@ -1,4 +1,4 @@
-import { createVNode } from '../vnode'
+import { createVNode, Fragment } from '../vnode'
 
 /**
  * Compiler runtime helper for rendering `<slot/>`
@@ -19,7 +19,7 @@ export function renderSlot(slots, name: string, props) {
     // slot 就是一个函数，所以就可以把当前组件的一些数据给传出去，这个就是作用域插槽
     // 参数就是 props
     if (typeof slot == 'function') {
-      return createVNode('div', {}, slot(props))
+      return createVNode(Fragment, {}, slot(props))
     }
   }
 }

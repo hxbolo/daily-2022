@@ -209,6 +209,39 @@ function finishComponentSetup(instance) {
     instance.render = Component.render;
 }
 
+const Fragment = Symbol('Fragment');
+const Text = Symbol('Text');
+function createVNode(type, props, children) {
+    const vnode = {
+        type,
+        props,
+        children,
+        el: null,
+        shapeFlag: getShapFlag(type),
+    };
+    if (typeof children == 'string') {
+        vnode.shapeFlag |= 8 /* ShapeFlags.TEXT_CHILDREN */;
+    }
+    else if (Array.isArray(children)) {
+        vnode.shapeFlag |= 16 /* ShapeFlags.ARRAY_CHILDREN */;
+    }
+    // 组件+ children object
+    if (vnode.shapeFlag & 4 /* ShapeFlags.STATEFUL_COMPONENT */) {
+        if (typeof children === 'object') {
+            vnode.shapeFlag |= 32 /* ShapeFlags.SLOTS_CHILDREN */;
+        }
+    }
+    return vnode;
+}
+function createTextVnode(text) {
+    return createVNode(Text, {}, text);
+}
+function getShapFlag(type) {
+    return typeof type === 'string'
+        ? 1 /* ShapeFlags.ELEMENT */
+        : 4 /* ShapeFlags.STATEFUL_COMPONENT */;
+}
+
 function render(vnode, container) {
     // patch
     patch(vnode, container);
@@ -217,14 +250,37 @@ function patch(vnode, container) {
     // 处理组件
     // 判断vnode 是不是一个element
     // 是element处理 element
-    const { shapeFlag } = vnode;
-    if (shapeFlag & 1 /* ShapeFlags.ELEMENT */) {
-        processElement(vnode, container);
+    const { type, shapeFlag } = vnode;
+    // fragment => 只渲染 children
+    switch (type) {
+        case Fragment:
+            processFragment(vnode, container);
+            break;
+        case Text:
+            processText(vnode, container);
+            break;
+        default:
+            if (shapeFlag & 1 /* ShapeFlags.ELEMENT */) {
+                processElement(vnode, container);
+            }
+            else if (shapeFlag & 4 /* ShapeFlags.STATEFUL_COMPONENT */) {
+                //组件 object
+                processComponent(vnode, container);
+            }
+            break;
     }
-    else if (shapeFlag & 4 /* ShapeFlags.STATEFUL_COMPONENT */) {
-        //组件 object
-        processComponent(vnode, container);
-    }
+}
+function processFragment(vnode, container) {
+    // 渲染children
+    mountChildren(vnode, container);
+}
+function processText(vnode, container) {
+    debugger;
+    const { children } = vnode;
+    console.log('children', children);
+    const textNode = (vnode.el = document.createTextNode(children));
+    console.log('textNode', textNode);
+    container.append(textNode);
 }
 function processElement(vnode, container) {
     // 初始话
@@ -288,32 +344,6 @@ function setupRenderEffect(instance, initialVNode, container) {
     initialVNode.el = subTree.el;
 }
 
-function createVNode(type, props, children) {
-    const vnode = {
-        type,
-        props,
-        children,
-        el: null,
-        shapeFlag: getShapFlag(type)
-    };
-    if (typeof children == 'string') {
-        vnode.shapeFlag |= 8 /* ShapeFlags.TEXT_CHILDREN */;
-    }
-    else if (Array.isArray(children)) {
-        vnode.shapeFlag |= 16 /* ShapeFlags.ARRAY_CHILDREN */;
-    }
-    // 组件+ children object
-    if (vnode.shapeFlag & 4 /* ShapeFlags.STATEFUL_COMPONENT */) {
-        if (typeof children === 'object') {
-            vnode.shapeFlag |= 32 /* ShapeFlags.SLOTS_CHILDREN */;
-        }
-    }
-    return vnode;
-}
-function getShapFlag(type) {
-    return typeof type === 'string' ? 1 /* ShapeFlags.ELEMENT */ : 4 /* ShapeFlags.STATEFUL_COMPONENT */;
-}
-
 function createApp(rootComponent) {
     return {
         mount(rootContainer) {
@@ -349,9 +379,9 @@ function renderSlot(slots, name, props) {
         // slot 就是一个函数，所以就可以把当前组件的一些数据给传出去，这个就是作用域插槽
         // 参数就是 props
         if (typeof slot == 'function') {
-            return createVNode('div', {}, slot(props));
+            return createVNode(Fragment, {}, slot(props));
         }
     }
 }
 
-export { createApp, h, renderSlot };
+export { createApp, createTextVnode, h, renderSlot };

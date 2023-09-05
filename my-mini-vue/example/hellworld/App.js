@@ -1,8 +1,8 @@
-import { h } from '../../lib/guide-mini-vue.esm.js'
+import { h, createTextVnode } from '../../lib/guide-mini-vue.esm.js'
 import { Foo } from './Foo.js'
 
 window.self = null
-
+ 
 // 案例：  slot
 export const App = {
   name: 'App',
@@ -17,7 +17,10 @@ export const App = {
       Foo,
       {},
       {
-        header: ({ age }) => h('p', {}, 'header' + age),
+        header: ({ age }) => [
+          h('p', {}, 'header' + age),
+          createTextVnode('您好呀'),
+        ],
         footer: ({ age }) => h('p', {}, 'footer' + age),
       }
     )
