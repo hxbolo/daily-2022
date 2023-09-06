@@ -169,13 +169,15 @@ const normalizeObjectSlots = (children, slots) => {
     }
 };
 
-function creatComponentInstance(vnode) {
+function creatComponentInstance(vnode, parent) {
     const component = {
         vnode,
         type: vnode.type,
         setupState: {},
         props: {},
         slots: {},
+        provides: parent ? parent.provides : {},
+        parent,
         emit: () => { },
     };
     component.emit = emit.bind(null, component);
@@ -259,9 +261,9 @@ function getShapFlag(type) {
 
 function render(vnode, container) {
     // patch
-    patch(vnode, container);
+    patch(vnode, container, null);
 }
-function patch(vnode, container) {
+function patch(vnode, container, parentComponent) {
     // 处理组件
     // 判断vnode 是不是一个element
     // 是element处理 element
@@ -269,25 +271,25 @@ function patch(vnode, container) {
     // fragment => 只渲染 children
     switch (type) {
         case Fragment:
-            processFragment(vnode, container);
+            processFragment(vnode, container, parentComponent);
             break;
         case Text:
             processText(vnode, container);
             break;
         default:
             if (shapeFlag & 1 /* ShapeFlags.ELEMENT */) {
-                processElement(vnode, container);
+                processElement(vnode, container, parentComponent);
             }
             else if (shapeFlag & 4 /* ShapeFlags.STATEFUL_COMPONENT */) {
                 //组件 object
-                processComponent(vnode, container);
+                processComponent(vnode, container, parentComponent);
             }
             break;
     }
 }
-function processFragment(vnode, container) {
+function processFragment(vnode, container, parentComponent) {
     // 渲染children
-    mountChildren(vnode, container);
+    mountChildren(vnode, container, parentComponent);
 }
 function processText(vnode, container) {
     const { children } = vnode;
@@ -296,12 +298,12 @@ function processText(vnode, container) {
     console.log('textNode', textNode);
     container.append(textNode);
 }
-function processElement(vnode, container) {
+function processElement(vnode, container, parentComponent) {
     // 初始话
-    mountElement(vnode, container);
+    mountElement(vnode, container, parentComponent);
     // 更新
 }
-function mountElement(vnode, container) {
+function mountElement(vnode, container, parentComponent) {
     // vnode =》 属于 element  -> div
     const el = (vnode.el = document.createElement(vnode.type));
     // string array
@@ -312,7 +314,7 @@ function mountElement(vnode, container) {
     }
     else if (shapeFlag & 16 /* ShapeFlags.ARRAY_CHILDREN */) {
         // array_children
-        mountChildren(vnode, el);
+        mountChildren(vnode, el, parentComponent);
     }
     // props
     const { props } = vnode;
@@ -331,18 +333,18 @@ function mountElement(vnode, container) {
     }
     container.append(el);
 }
-function mountChildren(vnode, el) {
+function mountChildren(vnode, el, parentComponent) {
     vnode.children.forEach((v) => {
-        patch(v, el);
+        patch(v, el, parentComponent);
     });
 }
-function processComponent(vnode, container) {
+function processComponent(vnode, container, parentComponent) {
     // 挂载组件
-    mountComponent(vnode, container);
+    mountComponent(vnode, container, parentComponent);
 }
-function mountComponent(initialVNode, container) {
+function mountComponent(initialVNode, container, parentComponent) {
     //创建组件实例
-    const instance = creatComponentInstance(initialVNode);
+    const instance = creatComponentInstance(initialVNode, parentComponent);
     setupComponent(instance);
     setupRenderEffect(instance, initialVNode, container);
 }
@@ -352,7 +354,7 @@ function setupRenderEffect(instance, initialVNode, container) {
     const subTree = instance.render.call(proxy);
     // vnode -> patch
     // vnode -> element -> mounElement
-    patch(subTree, container);
+    patch(subTree, container, instance);
     // element => mount
     // // 把 root element 赋值给 组件的vnode.el ，为后续调用 $el 的时候获取值ƒ
     initialVNode.el = subTree.el;
@@ -398,8 +400,44 @@ function renderSlot(slots, name, props) {
     }
 }
 
+function provide(key, value) {
+    // 存
+    // 获取组件实例对像
+    const currentInstance = getCurrentInstance();
+    if (currentInstance) {
+        let { provides } = currentInstance;
+        const parentProvides = currentInstance.parent.provides;
+        // 从原型上获取  改写  初始化init
+        if (provides === parentProvides) {
+            provides = currentInstance.provides = Object.create(parentProvides);
+        }
+        provides[key] = value;
+    }
+}
+function inject(key, defaultValue) {
+    // 取
+    const currentInstance = getCurrentInstance();
+    if (currentInstance) {
+        const parentProvides = currentInstance.parent.provides;
+        console.log('parentProvides', parentProvides);
+        if (key in parentProvides) {
+            return parentProvides[key];
+        }
+        else if (defaultValue) {
+            if (typeof defaultValue === 'function') {
+                return defaultValue();
+            }
+            else {
+                return defaultValue;
+            }
+        }
+    }
+}
+
 exports.createApp = createApp;
 exports.createTextVnode = createTextVnode;
 exports.getCurrentInstance = getCurrentInstance;
 exports.h = h;
+exports.inject = inject;
+exports.provide = provide;
 exports.renderSlot = renderSlot;

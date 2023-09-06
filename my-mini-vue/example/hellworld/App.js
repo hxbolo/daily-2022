@@ -2,22 +2,75 @@ import {
   h,
   createTextVnode,
   getCurrentInstance,
+  provide,
+  inject,
 } from '../../lib/guide-mini-vue.esm.js'
+
 import { Foo } from './Foo.js'
 
 window.self = null
 
+const Provider = {
+  name: 'Provider',
+  setup() {
+    provide('foo', 'fooval')
+    provide('bar', 'fooval')
+  },
+  render() {
+    return h('div', {}, [h('p', {}, 'Provider'), h(ProviderTwo)])
+  },
+}
+const ProviderTwo = {
+  name: 'Provider',
+  setup() {
+    provide('foo', 'foovalTwo')
+    const foo = inject('foo')
+    return {
+      foo
+    }
+  },
+  render() {
+    return h('div', {}, [h('p', {}, `ProviderTwo'foo: ${this.foo}`), h(Consumer)])
+  },
+}
+const Consumer = {
+  name: 'Consumer',
+  setup() {
+    const foo = inject('foo')
+    const bar = inject('bar')
+    const baz = inject('baz',()=> 'bazDefault')
+    
+    return {
+      foo,
+      bar,
+      baz
+    }
+  },
+  render() {
+    return h('div', {}, `consumer: ---${this.foo}----${this.bar}---${this.baz}`)
+  },
+}
+
 export const App = {
   name: 'App',
   render() {
-    return h('div', {}, [h('p', {}, 'currnetInstance demo'), h(Foo)])
+    return h('div', {}, [h('p', {}, 'apiInject'), h(Provider)])
   },
-  setup() {
-    const instance = getCurrentInstance()
-
-    console.log('app', instance)
-  },
+  setup() {},
 }
+
+// 案例 getCurrentInstance
+// export const App = {
+//   name: 'App',
+//   render() {
+//     return h('div', {}, [h('p', {}, 'currnetInstance demo'), h(Foo)])
+//   },
+//   setup() {
+//     const instance = getCurrentInstance()
+
+//     console.log('app', instance)
+//   },
+// }
 
 // 案例：  slot   text  fargment
 // export const App = {
