@@ -1,5 +1,5 @@
 <template>
- <section id="app" class="todoapp">
+  <section id="app" class="todoapp">
     <header class="header">
       <input
         class="new-todo"
@@ -8,16 +8,25 @@
         autofocus
         v-model="input"
         @keyup.enter="addTodo"
-        >
+      />
     </header>
     <section class="main">
-      <input id="toggle-all" class="toggle-all" v-model="allDone" type="checkbox">
+      <input
+        id="toggle-all"
+        class="toggle-all"
+        v-model="allDone"
+        type="checkbox"
+      />
       <label for="toggle-all">Mark all as complete</label>
       <ul class="todo-list">
-        <li v-for="todo in todos" :key='todo'  :class="{ editing: todo === editingTodo, completed: todo.completed }">
+        <li
+          v-for="todo in todos"
+          :key="todo"
+          :class="{ editing: todo === editingTodo, completed: todo.completed }"
+        >
           <div class="view">
-            <input class="toggle" type="checkbox" >
-            <label @dblclick="editTodo(todo)">{{todo.text}}</label>
+            <input class="toggle" type="checkbox" />
+            <label @dblclick="editTodo(todo)">{{ todo.text }}</label>
             <button class="destroy" @click="remove(todo)"></button>
           </div>
           <input
@@ -28,71 +37,79 @@
             @keyup.enter="doneEdit(todo)"
             @blur="doneEdit(todo)"
             @keyup.esc="cancelEdit(todo)"
-            >
+          />
         </li>
       </ul>
     </section>
-  
+    <div>111</div>
   </section>
 </template>
 
 <script >
-import { ref, onUpdated, onMounted, watchEffect, reactive, computed } from 'vue'
+import {
+  ref,
+  onUpdated,
+  onMounted,
+  watchEffect,
+  reactive,
+  computed,
+  toRef,
+} from 'vue'
 import './assets/index.css'
-  // 添加代办
-const useAdd = todos => {
+// 添加代办
+const useAdd = (todos) => {
   const input = ref('')
   const addTodo = () => {
     const text = input.value && input.value.trim()
     if (text.length === 0) return
     todos.value.unshift({
       text,
-      completed: false
+      completed: false,
     })
     input.value = ''
   }
   return {
     input,
-    addTodo
+    addTodo,
   }
 }
 
 // 删除代码
-const  useRemove = todos =>{
-  const remove = todo =>{
-    const index =  todos.value.indexOf(todo)
-    todos.value.splice(index,1)
+const useRemove = (todos) => {
+  const remove = (todo) => {
+    const index = todos.value.indexOf(todo)
+    todos.value.splice(index, 1)
   }
   return {
-    remove
+    remove,
   }
 }
 
 // 编辑待办
-const useEdit=(todos) =>{
+const useEdit = (todos) => {
   let beforeEditingText = ''
-  
-  const editingTodo =  ref(null)
 
-  const editTodo =  todo =>{
-    beforeEditingText =  todo.text
+  const editingTodo = ref(null)
+
+  const editTodo = (todo) => {
+    beforeEditingText = todo.text
     editingTodo.value = todo
   }
 
-  const doneEdit = todo =>{
-    if(!editingTodo.value) return
-    todo.text =  todo.text.trim()
-    editingTodo.value = null 
-  }
-  const cancelEdit =  todo=>{
+  const doneEdit = (todo) => {
+    if (!editingTodo.value) return
+    todo.text = todo.text.trim()
     editingTodo.value = null
-    todo.text =  beforeEditingText
+  }
+  const cancelEdit = (todo) => {
+    editingTodo.value = null
+    todo.text = beforeEditingText
   }
   return {
     editingTodo,
     editTodo,
     doneEdit,
-    cancelEdit
+    cancelEdit,
   }
 }
 
@@ -103,20 +120,37 @@ const useEdit=(todos) =>{
 //   })
 // }
 
-
 export default {
   name: 'App',
   setup() {
     const todos = ref([])
-    const {remove} =  useRemove(todos)
+    const { remove } = useRemove(todos)
 
     const books = reactive([ref('Vue 3 Guide')])
     // 这里需要 .value
-    console.log(books)
+    console.log('books', books[0].value)
 
     const map = reactive(new Map([['count', ref(0)]]))
     // 这里需要 .value
-    console.log(map.get('count').value)
+    console.log(map.get('count').value, '++++')
+
+    const state = reactive({
+      foo: 1,
+      bar: 2,
+    })
+
+    const fooRef = toRef(state, 'foo')
+
+    fooRef.value++
+    console.log('fooRef.value', fooRef.value, state.foo)
+
+    // =============
+
+    const count = ref(1)
+    const obj = reactive({ count })
+    obj.count++
+    count.value++
+    console.log('----', obj.count, count.value, obj.count === count.value)
     return {
       remove,
       todos,
@@ -127,11 +161,9 @@ export default {
   directives: {
     editingFocus: (el, binding) => {
       binding.value && el.focus()
-    }
-  }
+    },
+  },
 }
-
-
 </script>
 
 
