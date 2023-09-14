@@ -1,9 +1,17 @@
 import { ShapeFlags } from '../shared/ShapeFlags'
-import { isObject } from './../shared/index'
 import { creatComponentInstance, setupComponent } from './component'
 import { Fragment, Text } from './vnode'
+import { createAppAPI } from './createApp';
 
-export function render(vnode, container) {
+export function createRenderer(options){
+  const {
+    createElement,
+    patchProp,
+    insert
+  } = options
+
+
+function render(vnode, container) {
   // patch
   patch(vnode, container, null)
 }
@@ -55,8 +63,10 @@ function processElement(vnode: any, container: any, parentComponent) {
 }
 
 function mountElement(vnode: any, container: any, parentComponent) {
+  // canvas
+  // new  Element()
   // vnode =》 属于 element  -> div
-  const el = (vnode.el = document.createElement(vnode.type))
+  const el = (vnode.el = createElement(vnode.type))
 
   // string array
   const { children, shapeFlag } = vnode
@@ -79,15 +89,20 @@ function mountElement(vnode: any, container: any, parentComponent) {
     const val = props[key]
     // 点击事件具体click => 通用
     // 命名规划 on+ Event name
-    const isOn = (key: string) => /^on[A-Z]/.test(key)
-    if (isOn(key)) {
-      const event = key.slice(2).toLocaleLowerCase()
-      el.addEventListener(event, val)
-    }
+    // const isOn = (key: string) => /^on[A-Z]/.test(key)
+    // if (isOn(key)) {
+    //   const event = key.slice(2).toLocaleLowerCase()
+    //   el.addEventListener(event, val)
+    // }else{
 
-    el.setAttribute(key, val)
+    //   el.setAttribute(key, val)
+    // }
+    
+    patchProp(el, key,val)
   }
-  container.append(el)
+  // container.append(el)
+
+  insert(el, container)
 }
 
 function mountChildren(vnode, el, parentComponent) {
@@ -121,4 +136,10 @@ function setupRenderEffect(instance, initialVNode, container) {
   // element => mount
   // // 把 root element 赋值给 组件的vnode.el ，为后续调用 $el 的时候获取值ƒ
   initialVNode.el = subTree.el
+}
+
+return {
+  createApp:createAppAPI(render)
+}
+
 }
