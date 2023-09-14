@@ -332,7 +332,7 @@ function createAppAPI(render) {
 }
 
 function createRenderer(options) {
-    const { createElement, patchProp, insert } = options;
+    const { createElement: hostCreateElememt, patchProp: hostPatchProp, insert: hostInsert } = options;
     function render(vnode, container) {
         // patch
         patch(vnode, container, null);
@@ -381,7 +381,7 @@ function createRenderer(options) {
         // canvas
         // new  Element()
         // vnode =》 属于 element  -> div
-        const el = (vnode.el = createElement(vnode.type));
+        const el = (vnode.el = hostCreateElememt(vnode.type));
         // string array
         const { children, shapeFlag } = vnode;
         if (shapeFlag & 8 /* ShapeFlags.TEXT_CHILDREN */) {
@@ -407,10 +407,10 @@ function createRenderer(options) {
             // }else{
             //   el.setAttribute(key, val)
             // }
-            patchProp(el, key, val);
+            hostPatchProp(el, key, val);
         }
         // container.append(el)
-        insert(el, container);
+        hostInsert(el, container);
     }
     function mountChildren(vnode, el, parentComponent) {
         vnode.children.forEach((v) => {

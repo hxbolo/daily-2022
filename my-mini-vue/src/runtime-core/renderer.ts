@@ -5,9 +5,9 @@ import { createAppAPI } from './createApp';
 
 export function createRenderer(options){
   const {
-    createElement,
-    patchProp,
-    insert
+    createElement : hostCreateElememt,
+    patchProp: hostPatchProp,
+    insert: hostInsert
   } = options
 
 
@@ -66,7 +66,7 @@ function mountElement(vnode: any, container: any, parentComponent) {
   // canvas
   // new  Element()
   // vnode =》 属于 element  -> div
-  const el = (vnode.el = createElement(vnode.type))
+  const el = (vnode.el = hostCreateElememt(vnode.type))
 
   // string array
   const { children, shapeFlag } = vnode
@@ -98,11 +98,11 @@ function mountElement(vnode: any, container: any, parentComponent) {
     //   el.setAttribute(key, val)
     // }
     
-    patchProp(el, key,val)
+    hostPatchProp(el, key,val)
   }
   // container.append(el)
 
-  insert(el, container)
+  hostInsert(el, container)
 }
 
 function mountChildren(vnode, el, parentComponent) {
