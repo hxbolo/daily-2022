@@ -1,64 +1,56 @@
 <template>
   <div>
-    <h6>Editor:</h6>
-    <div id="pell" class="pell" />
-    <h6>HTML Output:</h6>
-    <pre id="pell-html-output"></pre>
+    <div class="container"></div>
+    1
   </div>
 </template>
 
 <script>
-import pell from '../node_modules/pell/src/pell'
+import ChildComponent from './components/ChildComponent.vue'
+
+const $container = $('.container')
+
+//   100000   <div class="target"></div>
+function createTargets() {
+  const htmlString = new Array(100000)
+    .fill('<div class="target"></div>')
+    .join('')
+  $container.html(htmlString)
+}
+
 export default {
-  name: 'App',
-  mounted() {
-    pell.init({
-      element: document.getElementById('pell'),
-      onChange: (html) => {
-        window.document.getElementById('pell-html-output').textContent = html
-      },
-      actions: [
-        'bold',
-        'italic',
-        'underline',
-        'strikethrough',
-        'heading1',
-        'heading2',
-        'paragraph',
-        'quote',
-        'olist',
-        'ulist',
-        'code',
-        'line',
-        {
-          name: 'image',
-          result: () => {
-            const url = window.prompt('Enter the image URL')
-            if (url) pell.exec('insertImage', this.ensureHTTP(url))
-          },
-        },
-        {
-          name: 'link',
-          result: () => {
-            const url = window.prompt('Enter the link URL')
-            if (url) pell.exec('createLink', this.ensureHTTP(url))
-          },
-        },
-      ],
-    })
+  components: {
+    ChildComponent,
+  },
+  data() {
+    return {
+      childData: null,
+      showChild: true,
+    }
+  },
+
+  methods: {
+    isInViewPort(element) {
+      const viewWidth =
+        window.innerWidth || document.documentElement.clientWidth
+      const viewHeight =
+        window.innerHeight || document.documentElement.clientHeight
+      const { top, right, bottom, left } = element.getBoundingClientRect()
+
+      return top >= 0 && left >= 0 && right <= viewWidth && bottom <= viewHeight
+    },
   },
 }
 </script>
-
-<style>
-.pell {
-  border: 2px solid #000;
-  border-radius: 0;
-  box-shadow: none;
+<style scoped>
+container {
+  display: flex;
+  flex-wrap: wrap;
 }
-
-#pell-html-output {
-  margin: 0;
-  white-space: pre-wrap;
+.target {
+  margin: 5px;
+  width: 20px;
+  height: 20px;
+  background: red;
 }
 </style>
