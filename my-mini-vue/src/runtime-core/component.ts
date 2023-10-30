@@ -1,4 +1,5 @@
 import { shallowReadonly } from '../reactvity/reactive'
+import { proxyRefs } from '../reactvity/ref'
 import { emit } from './componentEmit'
 import { initProps } from './componentProps'
 import { PublicInstanceProxyHandlers } from './componentPublicInstance'
@@ -13,6 +14,8 @@ export function creatComponentInstance(vnode, parent) {
     slots: {},
     provides: parent ? parent.provides : {},
     parent,
+    isMount:false,
+    subTree:{},
     emit: () => {},
   }
   component.emit = emit.bind(null, component) as any
@@ -51,7 +54,7 @@ function handleSetupResult(instance, setupResult: any) {
 
   // object
   if (typeof setupResult === 'object') {
-    instance.setupState = setupResult
+    instance.setupState = proxyRefs(setupResult)
   }
 
   // 保证组件render有值
