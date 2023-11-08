@@ -5,6 +5,7 @@ import { createAppAPI } from './createApp'
 import { effect } from '../reactvity/effect'
 import { EMPTY_OBJ } from '../shared'
 import { shouldUpdateComponent } from "./componentRenderUtils";
+import { queueJob } from "./scheduler.js";
 
 export function createRenderer(options) {
   const {
@@ -26,7 +27,8 @@ export function createRenderer(options) {
     // 处理组件
     // 判断vnode 是不是一个element
     // 是element处理 element
-    const { type, shapeFlag } = n2
+
+    const { type, shapeFlag } = n2;
 
     // fragment => 只渲染 children
     switch (type) {
@@ -510,7 +512,10 @@ export function createRenderer(options) {
 
         patch(prevSubTree, subTree, container, instance, anchor)
       }
-    })
+    },{scheduler(){
+      console.log('scheduler------',);
+      queueJob(instance.update)
+    }})
   }
 
   function updateComponentPreRender(instance, nextVNode) {
