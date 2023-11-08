@@ -4,6 +4,7 @@ import { Fragment, Text } from './vnode'
 import { createAppAPI } from './createApp'
 import { effect } from '../reactvity/effect'
 import { EMPTY_OBJ } from '../shared'
+import { shouldUpdateComponent } from "./componentRenderUtils";
 
 export function createRenderer(options) {
   const {
@@ -144,46 +145,46 @@ export function createRenderer(options) {
     parentAnchor,
     parentComponent
   ) {
-    let i = 0;
-    const l2 = c2.length;
-    let e1 = c1.length - 1;
-    let e2 = l2 - 1;
+    let i = 0
+    const l2 = c2.length
+    let e1 = c1.length - 1
+    let e2 = l2 - 1
 
     const isSameVNodeType = (n1, n2) => {
-      return n1.type === n2.type && n1.key === n2.key;
-    };
+      return n1.type === n2.type && n1.key === n2.key
+    }
 
     while (i <= e1 && i <= e2) {
-      const prevChild = c1[i];
-      const nextChild = c2[i];
+      const prevChild = c1[i]
+      const nextChild = c2[i]
 
       if (!isSameVNodeType(prevChild, nextChild)) {
-        console.log("两个 child 不相等(从左往右比对)");
-        console.log(`prevChild:${prevChild}`);
-        console.log(`nextChild:${nextChild}`);
-        break;
+        console.log('两个 child 不相等(从左往右比对)')
+        console.log(`prevChild:${prevChild}`)
+        console.log(`nextChild:${nextChild}`)
+        break
       }
 
-      console.log("两个 child 相等，接下来对比这两个 child 节点(从左往右比对)");
-      patch(prevChild, nextChild, container, parentAnchor, parentComponent);
-      i++;
+      console.log('两个 child 相等，接下来对比这两个 child 节点(从左往右比对)')
+      patch(prevChild, nextChild, container, parentAnchor, parentComponent)
+      i++
     }
 
     while (i <= e1 && i <= e2) {
       // 从右向左取值
-      const prevChild = c1[e1];
-      const nextChild = c2[e2];
+      const prevChild = c1[e1]
+      const nextChild = c2[e2]
 
       if (!isSameVNodeType(prevChild, nextChild)) {
-        console.log("两个 child 不相等(从右往左比对)");
-        console.log(`prevChild:${prevChild}`);
-        console.log(`nextChild:${nextChild}`);
-        break;
+        console.log('两个 child 不相等(从右往左比对)')
+        console.log(`prevChild:${prevChild}`)
+        console.log(`nextChild:${nextChild}`)
+        break
       }
-      console.log("两个 child 相等，接下来对比这两个 child 节点(从右往左比对)");
-      patch(prevChild, nextChild, container, parentAnchor, parentComponent);
-      e1--;
-      e2--;
+      console.log('两个 child 相等，接下来对比这两个 child 节点(从右往左比对)')
+      patch(prevChild, nextChild, container, parentAnchor, parentComponent)
+      e1--
+      e2--
     }
 
     if (i > e1 && i <= e2) {
@@ -194,20 +195,20 @@ export function createRenderer(options) {
       // 要添加的位置是当前的位置(e2 开始)+1
       // 因为对于往左侧添加的话，应该获取到 c2 的第一个元素
       // 所以我们需要从 e2 + 1 取到锚点的位置
-      const nextPos = e2 + 1;
-      const anchor = nextPos < l2 ? c2[nextPos].el : parentAnchor;
+      const nextPos = e2 + 1
+      const anchor = nextPos < l2 ? c2[nextPos].el : parentAnchor
       while (i <= e2) {
-        console.log(`需要新创建一个 vnode: ${c2[i].key}`);
-        patch(null, c2[i], container, anchor, parentComponent);
-        i++;
+        console.log(`需要新创建一个 vnode: ${c2[i].key}`)
+        patch(null, c2[i], container, anchor, parentComponent)
+        i++
       }
     } else if (i > e2 && i <= e1) {
       // 这种情况的话说明新节点的数量是小于旧节点的数量的
       // 那么我们就需要把多余的
       while (i <= e1) {
-        console.log(`需要删除当前的 vnode: ${c1[i].key}`);
-        hostRemove(c1[i].el);
-        i++;
+        console.log(`需要删除当前的 vnode: ${c1[i].key}`)
+        hostRemove(c1[i].el)
+        i++
       }
     } else {
       // 左右两边都比对完了，然后剩下的就是中间部位顺序变动的
@@ -215,52 +216,52 @@ export function createRenderer(options) {
       // a,b,[c,d,e],f,g
       // a,b,[e,c,d],f,g
 
-      let s1 = i;
-      let s2 = i;
-      const keyToNewIndexMap = new Map();
-      let moved = false;
-      let maxNewIndexSoFar = 0;
+      let s1 = i
+      let s2 = i
+      const keyToNewIndexMap = new Map()
+      let moved = false
+      let maxNewIndexSoFar = 0
       // 先把 key 和 newIndex 绑定好，方便后续基于 key 找到 newIndex
       // 时间复杂度是 O(1)
       for (let i = s2; i <= e2; i++) {
-        const nextChild = c2[i];
-        keyToNewIndexMap.set(nextChild.key, i);
+        const nextChild = c2[i]
+        keyToNewIndexMap.set(nextChild.key, i)
       }
 
       // 需要处理新节点的数量
-      const toBePatched = e2 - s2 + 1;
-      let patched = 0;
+      const toBePatched = e2 - s2 + 1
+      let patched = 0
       // 初始化 从新的index映射为老的index
       // 创建数组的时候给定数组的长度，这个是性能最快的写法
-      const newIndexToOldIndexMap = new Array(toBePatched);
+      const newIndexToOldIndexMap = new Array(toBePatched)
       // 初始化为 0 , 后面处理的时候 如果发现是 0 的话，那么就说明新值在老的里面不存在
-      for (let i = 0; i < toBePatched; i++) newIndexToOldIndexMap[i] = 0;
+      for (let i = 0; i < toBePatched; i++) newIndexToOldIndexMap[i] = 0
 
       // 遍历老节点
       // 1. 需要找出老节点有，而新节点没有的 -> 需要把这个节点删除掉
       // 2. 新老节点都有的，—> 需要 patch
       for (i = s1; i <= e1; i++) {
-        const prevChild = c1[i];
+        const prevChild = c1[i]
 
         // 优化点
         // 如果老的节点大于新节点的数量的话，那么这里在处理老节点的时候就直接删除即可
         if (patched >= toBePatched) {
-          hostRemove(prevChild.el);
-          continue;
+          hostRemove(prevChild.el)
+          continue
         }
 
-        let newIndex;
+        let newIndex
         if (prevChild.key != null) {
           // 这里就可以通过key快速的查找了， 看看在新的里面这个节点存在不存在
           // 时间复杂度O(1)
-          newIndex = keyToNewIndexMap.get(prevChild.key);
+          newIndex = keyToNewIndexMap.get(prevChild.key)
         } else {
           // 如果没key 的话，那么只能是遍历所有的新节点来确定当前节点存在不存在了
           // 时间复杂度O(n)
           for (let j = s2; j <= e2; j++) {
             if (isSameVNodeType(prevChild, c2[j])) {
-              newIndex = j;
-              break;
+              newIndex = j
+              break
             }
           }
         }
@@ -269,25 +270,25 @@ export function createRenderer(options) {
         // 所以需要通过值是不是 undefined 或者 null 来判断
         if (newIndex === undefined) {
           // 当前节点的key 不存在于 newChildren 中，需要把当前节点给删除掉
-          hostRemove(prevChild.el);
+          hostRemove(prevChild.el)
         } else {
           // 新老节点都存在
-          console.log("新老节点都存在");
+          console.log('新老节点都存在')
           // 把新节点的索引和老的节点的索引建立映射关系
           // i + 1 是因为 i 有可能是0 (0 的话会被认为新节点在老的节点中不存在)
-          newIndexToOldIndexMap[newIndex - s2] = i + 1;
+          newIndexToOldIndexMap[newIndex - s2] = i + 1
           // 来确定中间的节点是不是需要移动
           // 新的 newIndex 如果一直是升序的话，那么就说明没有移动
           // 所以我们可以记录最后一个节点在新的里面的索引，然后看看是不是升序
           // 不是升序的话，我们就可以确定节点移动过了
           if (newIndex >= maxNewIndexSoFar) {
-            maxNewIndexSoFar = newIndex;
+            maxNewIndexSoFar = newIndex
           } else {
-            moved = true;
+            moved = true
           }
 
-          patch(prevChild, c2[newIndex], container, null, parentComponent);
-          patched++;
+          patch(prevChild, c2[newIndex], container, null, parentComponent)
+          patched++
         }
       }
 
@@ -300,8 +301,8 @@ export function createRenderer(options) {
       // 所以后面我们可以直接遍历索引值来处理，也就是直接使用 toBePatched 即可
       const increasingNewIndexSequence = moved
         ? getSequence(newIndexToOldIndexMap)
-        : [];
-      let j = increasingNewIndexSequence.length - 1;
+        : []
+      let j = increasingNewIndexSequence.length - 1
 
       // 遍历新节点
       // 1. 需要找出老节点没有，而新节点有的 -> 需要把这个节点创建
@@ -311,27 +312,27 @@ export function createRenderer(options) {
       // 因为 insert 逻辑是使用的 insertBefore()
       for (let i = toBePatched - 1; i >= 0; i--) {
         // 确定当前要处理的节点索引
-        const nextIndex = s2 + i;
-        const nextChild = c2[nextIndex];
+        const nextIndex = s2 + i
+        const nextChild = c2[nextIndex]
         // 锚点等于当前节点索引+1
         // 也就是当前节点的后面一个节点(又因为是倒遍历，所以锚点是位置确定的节点)
-        const anchor = nextIndex + 1 < l2 ? c2[nextIndex + 1].el : parentAnchor;
+        const anchor = nextIndex + 1 < l2 ? c2[nextIndex + 1].el : parentAnchor
 
         if (newIndexToOldIndexMap[i] === 0) {
           // 说明新节点在老的里面不存在
           // 需要创建
-          patch(null, nextChild, container, anchor, parentComponent);
+          patch(null, nextChild, container, anchor, parentComponent)
         } else if (moved) {
           // 需要移动
           // 1. j 已经没有了 说明剩下的都需要移动了
           // 2. 最长子序列里面的值和当前的值匹配不上， 说明当前元素需要移动
           if (j < 0 || increasingNewIndexSequence[j] !== i) {
             // 移动的话使用 insert 即可
-            hostInsert(nextChild.el, container, anchor);
+            hostInsert(nextChild.el, container, anchor)
           } else {
             // 这里就是命中了  index 和 最长递增子序列的值
             // 所以可以移动指针了
-            j--;
+            j--
           }
         }
       }
@@ -426,9 +427,28 @@ export function createRenderer(options) {
     parentComponent,
     anchor
   ) {
-    // 挂载组件
-    mountComponent(n2, container, parentComponent, anchor)
+    if (!n1) {
+      // 挂载组件
+      mountComponent(n2, container, parentComponent, anchor)
+    } else {
+      // 更新组件
+      updateComponent(n1, n2)
+    }
   }
+
+  function updateComponent(n1, n2) {
+    // 检测组件的 props
+    if (shouldUpdateComponent(n1, n2)) {
+      const instance = (n2.component = n1.component)
+
+      // 下次更新的虚拟节点
+      instance.next = n2
+      instance.update()
+    } else {
+    }
+  }
+
+
 
   function mountComponent(
     initialVNode: any,
@@ -437,14 +457,17 @@ export function createRenderer(options) {
     anchor
   ) {
     //创建组件实例
-    const instance = creatComponentInstance(initialVNode, parentComponent)
+    const instance = (initialVNode.component = creatComponentInstance(
+      initialVNode,
+      parentComponent
+    ))
 
     setupComponent(instance)
     setupRenderEffect(instance, initialVNode, container, anchor)
   }
 
   function setupRenderEffect(instance, initialVNode, container, anchor) {
-    effect(() => {
+    instance.update = effect(() => {
       // 第一次渲染初始化触发
       if (!instance.isMounted) {
         console.log('init-- 初始化')
@@ -467,6 +490,16 @@ export function createRenderer(options) {
       } else {
         // 更新触发
         console.log('update')
+
+        // 需要一个vnode
+        // 如果有 next 的话， 说明需要更新组件的数据（props，slots 等）
+        // 先更新组件的数据，然后更新完成后，在继续对比当前组件的子元素
+        const { next, vnode } = instance
+        if (next) {
+          next.el = vnode.el
+          updateComponentPreRender(instance, next)
+        }
+
         const { proxy } = instance
 
         // 虚拟节点树
@@ -480,49 +513,67 @@ export function createRenderer(options) {
     })
   }
 
+  function updateComponentPreRender(instance, nextVNode) {
+    // 更新 nextVNode 的组件实例
+    // 现在 instance.vnode 是组件实例更新前的
+    // 所以之前的 props 就是基于 instance.vnode.props 来获取
+    // 接着需要更新 vnode ，方便下一次更新的时候获取到正确的值
+    nextVNode.component = instance
+    // TODO 后面更新 props 的时候需要对比
+    // const prevProps = instance.vnode.props;
+    instance.vnode = nextVNode
+    instance.next = null
+
+    const { props } = nextVNode
+    console.log('更新组件的 props', props)
+    instance.props = props
+    console.log('更新组件的 slots')
+    // TODO 更新组件的 slots
+    // 需要重置 vnode
+  }
+
   return {
     createApp: createAppAPI(render),
   }
 }
 
-
 function getSequence(arr: number[]): number[] {
-  const p = arr.slice();
-  const result = [0];
-  let i, j, u, v, c;
-  const len = arr.length;
+  const p = arr.slice()
+  const result = [0]
+  let i, j, u, v, c
+  const len = arr.length
   for (i = 0; i < len; i++) {
-    const arrI = arr[i];
+    const arrI = arr[i]
     if (arrI !== 0) {
-      j = result[result.length - 1];
+      j = result[result.length - 1]
       if (arr[j] < arrI) {
-        p[i] = j;
-        result.push(i);
-        continue;
+        p[i] = j
+        result.push(i)
+        continue
       }
-      u = 0;
-      v = result.length - 1;
+      u = 0
+      v = result.length - 1
       while (u < v) {
-        c = (u + v) >> 1;
+        c = (u + v) >> 1
         if (arr[result[c]] < arrI) {
-          u = c + 1;
+          u = c + 1
         } else {
-          v = c;
+          v = c
         }
       }
       if (arrI < arr[result[u]]) {
         if (u > 0) {
-          p[i] = result[u - 1];
+          p[i] = result[u - 1]
         }
-        result[u] = i;
+        result[u] = i
       }
     }
   }
-  u = result.length;
-  v = result[u - 1];
+  u = result.length
+  v = result[u - 1]
   while (u-- > 0) {
-    result[u] = v;
-    v = p[v];
+    result[u] = v
+    v = p[v]
   }
-  return result;
+  return result
 }

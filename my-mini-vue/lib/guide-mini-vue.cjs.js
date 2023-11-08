@@ -10,6 +10,8 @@ function createVNode(type, props, children) {
         props,
         children,
         el: null,
+        component: null,
+        next: null,
         shapeFlag: getShapFlag(type),
         key: props && props.key,
     };
@@ -523,6 +525,46 @@ function createAppAPI(render) {
     };
 }
 
+function shouldUpdateComponent(prevVNode, nextVNode) {
+    const { props: prevProps } = prevVNode;
+    const { props: nextProps } = nextVNode;
+    //   const emits = component!.emitsOptions;
+    // 这里主要是检测组件的 props
+    // 核心：只要是 props 发生改变了，那么这个 component 就需要更新
+    // 1. props 没有变化，那么不需要更新
+    if (prevProps === nextProps) {
+        return false;
+    }
+    // 如果之前没有 props，那么就需要看看现在有没有 props 了
+    // 所以这里基于 nextProps 的值来决定是否更新
+    if (!prevProps) {
+        return !!nextProps;
+    }
+    // 之前有值，现在没值，那么肯定需要更新
+    if (!nextProps) {
+        return true;
+    }
+    // 以上都是比较明显的可以知道 props 是否是变化的
+    // 在 hasPropsChanged 会做更细致的对比检测
+    return hasPropsChanged(prevProps, nextProps);
+}
+function hasPropsChanged(prevProps, nextProps) {
+    // 依次对比每一个 props.key
+    // 提前对比一下 length ，length 不一致肯定是需要更新的
+    const nextKeys = Object.keys(nextProps);
+    if (nextKeys.length !== Object.keys(prevProps).length) {
+        return true;
+    }
+    // 只要现在的 prop 和之前的 prop 不一样那么就需要更新
+    for (let i = 0; i < nextKeys.length; i++) {
+        const key = nextKeys[i];
+        if (nextProps[key] !== prevProps[key]) {
+            return true;
+        }
+    }
+    return false;
+}
+
 function createRenderer(options) {
     const { createElement: hostCreateElememt, patchProp: hostPatchProp, insert: hostInsert, remove: hostRemove, setElementText: hostSetElementText, } = options;
     function render(vnode, container) {
@@ -637,12 +679,12 @@ function createRenderer(options) {
             const prevChild = c1[i];
             const nextChild = c2[i];
             if (!isSameVNodeType(prevChild, nextChild)) {
-                console.log("两个 child 不相等(从左往右比对)");
+                console.log('两个 child 不相等(从左往右比对)');
                 console.log(`prevChild:${prevChild}`);
                 console.log(`nextChild:${nextChild}`);
                 break;
             }
-            console.log("两个 child 相等，接下来对比这两个 child 节点(从左往右比对)");
+            console.log('两个 child 相等，接下来对比这两个 child 节点(从左往右比对)');
             patch(prevChild, nextChild, container, parentAnchor);
             i++;
         }
@@ -651,12 +693,12 @@ function createRenderer(options) {
             const prevChild = c1[e1];
             const nextChild = c2[e2];
             if (!isSameVNodeType(prevChild, nextChild)) {
-                console.log("两个 child 不相等(从右往左比对)");
+                console.log('两个 child 不相等(从右往左比对)');
                 console.log(`prevChild:${prevChild}`);
                 console.log(`nextChild:${nextChild}`);
                 break;
             }
-            console.log("两个 child 相等，接下来对比这两个 child 节点(从右往左比对)");
+            console.log('两个 child 相等，接下来对比这两个 child 节点(从右往左比对)');
             patch(prevChild, nextChild, container, parentAnchor);
             e1--;
             e2--;
@@ -746,7 +788,7 @@ function createRenderer(options) {
                 }
                 else {
                     // 新老节点都存在
-                    console.log("新老节点都存在");
+                    console.log('新老节点都存在');
                     // 把新节点的索引和老的节点的索引建立映射关系
                     // i + 1 是因为 i 有可能是0 (0 的话会被认为新节点在老的节点中不存在)
                     newIndexToOldIndexMap[newIndex - s2] = i + 1;
@@ -878,17 +920,32 @@ function createRenderer(options) {
         });
     }
     function processComponent(n1, n2, container, parentComponent, anchor) {
-        // 挂载组件
-        mountComponent(n2, container, parentComponent);
+        if (!n1) {
+            // 挂载组件
+            mountComponent(n2, container, parentComponent);
+        }
+        else {
+            // 更新组件
+            updateComponent(n1, n2);
+        }
+    }
+    function updateComponent(n1, n2) {
+        // 检测组件的 props
+        if (shouldUpdateComponent(n1, n2)) {
+            const instance = (n2.component = n1.component);
+            // 下次更新的虚拟节点
+            instance.next = n2;
+            instance.update();
+        }
     }
     function mountComponent(initialVNode, container, parentComponent, anchor) {
         //创建组件实例
-        const instance = creatComponentInstance(initialVNode, parentComponent);
+        const instance = (initialVNode.component = creatComponentInstance(initialVNode, parentComponent));
         setupComponent(instance);
         setupRenderEffect(instance, initialVNode, container);
     }
     function setupRenderEffect(instance, initialVNode, container, anchor) {
-        effect(() => {
+        instance.update = effect(() => {
             // 第一次渲染初始化触发
             if (!instance.isMounted) {
                 console.log('init-- 初始化');
@@ -907,6 +964,14 @@ function createRenderer(options) {
             else {
                 // 更新触发
                 console.log('update');
+                // 需要一个vnode
+                // 如果有 next 的话， 说明需要更新组件的数据（props，slots 等）
+                // 先更新组件的数据，然后更新完成后，在继续对比当前组件的子元素
+                const { next, vnode } = instance;
+                if (next) {
+                    next.el = vnode.el;
+                    updateComponentPreRender(instance, next);
+                }
                 const { proxy } = instance;
                 // 虚拟节点树
                 const subTree = instance.render.call(proxy);
@@ -916,6 +981,23 @@ function createRenderer(options) {
                 patch(prevSubTree, subTree, container, instance);
             }
         });
+    }
+    function updateComponentPreRender(instance, nextVNode) {
+        // 更新 nextVNode 的组件实例
+        // 现在 instance.vnode 是组件实例更新前的
+        // 所以之前的 props 就是基于 instance.vnode.props 来获取
+        // 接着需要更新 vnode ，方便下一次更新的时候获取到正确的值
+        nextVNode.component = instance;
+        // TODO 后面更新 props 的时候需要对比
+        // const prevProps = instance.vnode.props;
+        instance.vnode = nextVNode;
+        instance.next = null;
+        const { props } = nextVNode;
+        console.log('更新组件的 props', props);
+        instance.props = props;
+        console.log('更新组件的 slots');
+        // TODO 更新组件的 slots
+        // 需要重置 vnode
     }
     return {
         createApp: createAppAPI(render),
