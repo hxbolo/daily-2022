@@ -19,8 +19,8 @@ function patchProp(el, key, prevVal, nextVal) {
 }
 
 // 插入元素
-function insert(el, parent) {
-  parent.append(el)
+function insert(child, parent, anchor) {
+  parent.insertBefore(child, anchor || null)
 }
 // 移除
 function remove(child) {
@@ -31,7 +31,7 @@ function remove(child) {
 }
 
 // 设置text
-function setElementText(el, text){
+function setElementText(el, text) {
   el.textContent = text
 }
 
@@ -40,7 +40,7 @@ const renderer: any = createRenderer({
   patchProp,
   insert,
   remove,
-  setElementText
+  setElementText,
 })
 
 export function createApp(...args) {
