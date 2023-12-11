@@ -276,3 +276,13 @@ setTimeout(() => {
 
 - 只有 toRefs 可以解构；
 
+
+
+### 编译模块 template 转换成 render 函数
+
+1. parse： 接收用户写的template 也就是string进入到parse中产出一个ast(抽象语法树)
+2. transform : 处理节点， 编辑节点
+3. codegen: 生产对应的代码通过ast上面的渲染逻辑， 拼接生产对应的render
+
+
+### 有限状态机（读取一组输入然后根据这些输入来更改为不同的状态）

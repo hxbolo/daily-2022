@@ -368,7 +368,7 @@ console.log(person01.__proto__ == Person.prototype)
 
   1. Expires
 
-  - Exprires 的值为服务端返回的数据到期时间。当再次请求时的请求时间小于返回的此时间，则直接使用缓存数据。
+  - Expires 的值为服务端返回的数据到期时间。当再次请求时的请求时间小于返回的此时间，则直接使用缓存数据。
 
   2. Cache-Control。
 

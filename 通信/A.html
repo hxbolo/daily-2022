@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <button onclick="openB()">open B</button>
+    <script>
+      // A.html
+      
+      const msg = {
+        name: 'A------',
+      }
+      function openB() {
+        const open = window.open('http://127.0.0.1:5500/%E9%80%9A%E4%BF%A1/B.html', 'B')
+        setTimeout(() => {
+          open.postMessage(msg, 'http://127.0.0.1:5500/%E9%80%9A%E4%BF%A1/B.html')
+        }, 1000)
+      }
+
+      // 此处你或许会感到疑问，为什么要在setTimeout里调用postMessage
+      // 因为调用window.open()方法以后，远程 URL 不会被立即载入，载入过程是异步的。
+      //（实际加载这个URL的时间推迟到当前脚本块执行结束之后。窗口的创建和相关资源的加载异步地进行。）
+      // 此处不用setTimeout就会出现B页面还没有打开，消息就已经发送，导致B无法收到消息
+      // 当然setTimeout并不是一个好方法，此处只是为了方便演示` </pre>
+    </script>
+  </body>
+</html>

@@ -128,24 +128,40 @@
 // // // }
 // // // console.log(a == 1 && a == 2 && a == 3) // true
 
-// // var test = {
-// //   i: 10,
-// //   toString: function() {
-// //      console.log('toString');
-// //      return this.i;
-// //   },
-// //   valueOf: function() {
-// //      console.log('valueOf');
-// //      return this.i;
-// //   }
-// //  }
-// //  alert(test);// 10 toString
-// //  alert(+test); // 10 valueOf
-// //  alert(''+test); // 10 valueOf
-// //  alert(String(test)); // 10 toString
-// //  alert(Number(test)); // 10 valueOf
-// //  alert(test == '10'); // true valueOf
-// //  alert(test === '10'); // false
+var test = {
+  i: 10,
+  toString: function () {
+    console.log('toString')
+    return this.i
+  },
+  valueOf: function () {
+    console.log('valueOf', typeof this.i)
+    return this.i
+  },
+}
+console.log(+test)
+
+var abb = {
+  name: 1,
+  valueOf() {
+    return {
+      name: 1,
+    }
+  },
+  toString() {
+    return {
+      name: 2,
+    }
+  },
+}
+console.log(abb === 1, typeof abb.name, )
+//  alert(test);// 10 toString
+//  alert(+test); // 10 valueOf
+//  alert(''+test); // 10 valueOf
+//  alert(String(test)); // 10 toString
+//  alert(Number(test)); // 10 valueOf
+//  alert(test == '10'); // true valueOf
+//  alert(test === '10'); // false
 
 // console.log(a) // undefind
 // a() // 10
@@ -177,25 +193,32 @@
 // }).then(function e() {
 // console.log("then5");
 // });
-setTimeout(function timeout() {
-  console.log('Timed out!');
-  }, 0);
-  Promise.resolve(1).then(function resolve() {
-  console.log('Resolved!');
-  Promise.resolve().then(function resolve() {
-    console.log('Resolved2222!');
-    }).then(r=>{
-      console.log(333);
-    }).then(r=>{
-      console.log(4);
-    })
-  }).then(r=>{
-    console.log(1);
-  }).then(r=>{
-    console.log(2);
-  }).then(r=>{
-    console.log(3);
-  });
+// setTimeout(function timeout() {
+//   console.log('Timed out!')
+// }, 0)
+// Promise.resolve(1)
+//   .then(function resolve() {
+//     console.log('Resolved!')
+//     Promise.resolve()
+//       .then(function resolve() {
+//         console.log('Resolved2222!')
+//       })
+//       .then((r) => {
+//         console.log(333)
+//       })
+//       .then((r) => {
+//         console.log(4)
+//       })
+//   })
+//   .then((r) => {
+//     console.log(1)
+//   })
+//   .then((r) => {
+//     console.log(2)
+//   })
+//   .then((r) => {
+//     console.log(3)
+//   })
 // Promise.resolve()
 //   .then(function a() {
 //     console.log('then1')
@@ -290,16 +313,196 @@ setTimeout(function timeout() {
 // const person1 = newq(Person, 'Alice', 30)
 // console.log(person1) // 输出：Person { name: 'Alice', age: 30 }
 
+// function countDown(n) {
+//   console.log(n)
+//   const timer = setInterval(() => {
+//     n--
+//     if (n >= 0) {
+//       console.log(n)
+//     } else {
+//       clearInterval(timer)
+//     }
+//   }, 1000)
+// }
+// countDown(5)
 
-function countDown(n){
-  console.log(n);
-  const timer= setInterval(() =>{
-    n--
-    if(n>=0){
-      console.log(n);
-    }else{
-      clearInterval(timer)
-    }
-  },1000)
+// function transform(number) {
+//   var num = number.toString()
+//   var numArr = num.split('.')
+//   var [num, dotNum] = numArr
+//   var operateNum = num.split('').reverse()
+//   var result = [],
+//     len = operateNum.length
+//   for (var i = 0; i < len; i++) {
+//     result.push(operateNum[i])
+//     if ((i + 1) % 3 === 0 && i !== len - 1) {
+//       result.push(',')
+//     }
+//   }
+//   if (dotNum) {
+//     result.reverse().push('.', ...dotNum)
+//     return result.join('')
+//   } else {
+//     return result.reverse().join('')
+//   }
+// }
+
+// console.log('transform++++++', transform(8983883838383833.003))
+
+//  function convertTo2DArray(arr, chunkSize) {
+//        var result = [];
+//        for (var i = 0; i < arr.length; i += chunkSize) {
+//          result.push(arr.slice(i, i + chunkSize));
+//        }
+//        return result;
+//      }
+//  ​
+//      var inputArray = [1, 2, 3, 4, 5, 6, 7, 8, 9];
+//      var outputArray = convertTo2DArray(inputArray, 3);
+//  ​
+//      console.log(outputArray);
+
+// function aaa(arr, size) {
+//   let res = []
+
+//   console.log(arr, size);
+
+//   for(let i= 0; i<arr.length; i+= size){
+//     console.log(i);
+
+//     res.push(arr.slice(i,i+size))
+//   }
+//   console.log(res);
+//   return res
+// }
+
+// var inputArray = [1, 2, 3, 4, 5, 6, 7, 8, 9,99]
+// var outputArray = aaa(inputArray, 3)
+
+// function fibonacci(n) {
+//   if (n <= 1) return n;
+//   let fib = [0, 1]; // 保存斐波那契数列的结果
+//   for (let i = 2; i <= n; i++) {
+//       fib[i] = fib[i - 1] + fib[i - 2]; // 计算第i个斐波那契数
+//       console.log(fib);
+//   }
+//   return fib[n];
+// }
+
+// console.log(fibonacci(5),'+_+_+_+_+');
+
+// const promises = [
+//   Promise.resolve(1),
+//   Promise.reject('Error 1'),
+//   Promise.reject('Error 2'),
+// ]
+
+// Promise.allSettled(promises).then((results) => {
+//   const rejectedReasons = results
+//     .filter((result) => result.status === 'rejected')
+//     .map((result) => result.reason)
+//   console.log(rejectedReasons, '=====', results) // 输出所有被拒绝的原因数组
+// })
+
+// const promises = [
+//   Promise.resolve(1),
+//   Promise.reject('Error 1'),
+//   Promise.reject('Error 2'),
+// ]
+
+// Promise.all(promises.map((p) => p.catch((error) => error))).then((results) => {
+//   const rejectedReasons = results.filter((result) => result instanceof Error)
+//   console.log(rejectedReasons,'+++++___',results) // 输出所有被拒绝的原因数组
+// })
+
+// let a = [1, 2, 3, 4, 5, 6]
+// for (let i = 0; i < a.length; i++) {
+//   ;(function (i) {
+//     setTimeout(() => {
+//       console.log(a[i])
+//     }, i * 2000)
+//   })(i)
+// }
+
+// var arr = [1, 2, 3, 4, 5, 6]
+// for (var i = 0; i < arr.length; i++) {
+//   ;(function (i) {
+//     setTimeout(function () {
+//       console.log(arr[i])
+//     }, i * 2000)
+//   })(i)
+// }
+
+// for (let i = 0; i < a.length; i++) {
+//   ;(function (i) {
+//     setTimeout(() => {
+//       console.log(arr[i])
+//     }, i * 2000)
+//   })(i)
+// }
+
+// function sleep1(ms) {
+//   return new Promise((resolve) => {
+//     for (let i = 0; i < a.length; i++) {
+//       // setTimeout(()=>{
+//       // console.log(a[i],'=====');
+//       // },ms)
+//       setTimeout(resolve, ms)
+//     }
+//   })
+// }
+// async function test() {
+//   let temple = await sleep1(1000)
+//   console.log(1, '***********')
+//   return temple
+// }
+
+// test()
+
+// const array = [1, 2, 3, 4, 5]
+
+// async function printArrayWithDelay() {
+//   for (let i = 0; i < array.length; i++) {
+//     console.log(array[i])
+//     await new Promise((resolve) => setTimeout(resolve, 2000))
+//   }
+// }
+
+// printArrayWithDelay()
+
+function sleep(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms))
 }
-countDown(5)
+
+async function printArrayWithDelay(arr) {
+  for (const num of arr) {
+    console.log(num)
+    await sleep(2000) // 暂停2秒
+  }
+}
+
+const myArray = [1, 2, 3, 4, 5]
+
+printArrayWithDelay(myArray)
+
+function sleep(m) {
+  return new Promise((resolve) => setTimeout(resolve, m))
+}
+
+async function a(arr) {
+  for (const num of arr) {
+    console.log(num)
+    await sleep(2000)
+  }
+}
+
+a(myArray)
+
+// type person= {
+//   name: String
+//   age:number
+// }
+
+// type Util<T,K  extends keyof T> = T[K]
+
+// type name = Util<person,'name'>

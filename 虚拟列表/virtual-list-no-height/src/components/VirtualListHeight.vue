@@ -141,7 +141,7 @@ export default {
       nodes.forEach((node)=>{
         let rect = node.getBoundingClientRect();
 
-        console.log(rect);
+        console.log('rect------',rect);
         let height = rect.height;
         let index = +node.id.slice(1)
         let oldHeight = this.positions[index].height;

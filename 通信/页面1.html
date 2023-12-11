@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<script type="text/javascript">
+    function openWin() {
+        var params = [
+            ["params1", "aaaaaa"],
+            ["params2", "bbbbbb"]
+        ];
+
+        var popupwin = window.open("http://localhost:8080/");
+        console.log(params, 'params');
+
+        popupwin.onload = function(e) {
+            popupwin.postMessage(params, window.location.origin);
+        }
+
+        window.addEventListener('message', function(event) {
+            if (event.origin === "http://localhost:8080") {
+                var val = event.data.returnValue;
+                alert(val);
+            }
+        });
+    }
+</script>
+</head>
+<body>
+<input type="button" value="打开新页面" onclick="openWin()" />
+</body>
+</html>
