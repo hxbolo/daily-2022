@@ -9,6 +9,7 @@ const readonlyGet = creatGetter(true)
 
 const shallowReadonlyGet = creatGetter(true, true)
 
+// 收集依赖
 function creatGetter(isReadonly = false, shallow = false) {
   return function get(target, key) {
     if (key === ReactiveFlages.IS_REACTIVE) {
@@ -36,6 +37,7 @@ function creatGetter(isReadonly = false, shallow = false) {
     return res
   }
 }
+// 触发依赖
 function creatSetter() {
   return function set(target, key, value) {
     const res = Reflect.set(target, key, value)

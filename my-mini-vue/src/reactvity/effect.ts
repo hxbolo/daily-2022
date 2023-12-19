@@ -70,6 +70,7 @@ function cleanupEffect(effect) {
   effect.deps.length = 0
 }
 // 收集依赖
+// 初始化 depsMap 的逻辑
 const targetMap = new Map()
 export function track(target, key) {
   if (!isTracking()) return
