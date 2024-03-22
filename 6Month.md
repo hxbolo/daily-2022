@@ -1344,3 +1344,37 @@ JSBridge 的实现原理如下：
     name: string,
   }
   ```
+
+### DOM 和 BOM5
+
+- DOM
+  DOM 又称文档对象模型，它是 HTML 和 XML 文档的编程接口，它主要描述了一些我们使用 JS 处理网页内容的方法和接口，它的目标是网页内容。比如说我们使用 JS 修改页面内容，其实就是操作的 DOM 文档。
+
+  window 对象是 BOM 的核心对象，它表示的是浏览器的实例
+
+  - navigator 对象
+  - location 对象
+  - history 对象
+
+- BOM
+  BOM 又称浏览器对象模型，它主要用来描述一些与浏览器行为相关的接口和方法，比如我们利用 JS 调整浏览器窗口大小、标签页跳转等等，这些都是 BOM 对象。
+
+  下面是 DOM 和 BOM 中一些常见的属性示例：
+
+**DOM 属性示例：**
+
+1. `document`: 表示整个文档的对象。
+2. `element.innerHTML`: 获取或设置 HTML 元素的内容。
+3. `element.style`: 获取或设置 HTML 元素的样式。
+4. `element.childNodes`: 获取一个元素的子节点列表。
+5. `element.getAttribute(name)`: 获取元素的指定属性值。
+
+**BOM 属性示例：**
+
+1. `window`: 表示浏览器窗口的全局对象。
+2. `window.navigator`: 提供关于浏览器的信息。
+3. `window.screen`: 提供关于屏幕的信息。
+4. `window.location`: 提供关于当前 URL 的信息，允许导航到新的 URL。
+5. `window.history`: 提供浏览器历史记录的操作。
+
+这只是其中的一小部分，DOM 和 BOM 提供了许多其他属性和方法，用于操作和控制文档结构、样式，以及与浏览器进行交互。

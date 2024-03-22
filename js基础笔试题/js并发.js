@@ -10,3 +10,13 @@ function request(url, time = 1) {
     }, time * 1e3)
   })
 }
+let year = 2023
+let month=10
+
+let daysInMonth = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
+// if ((year % 4 === 0 && year % 100 !== 0) || year % 400 === 0) {
+//     daysInMonth[1] = 29;
+// }
+// 获得指定年月的1号是星期几
+let targetDay = new Date(year, month, 1).getDay();
+console.log('targetDay',targetDay);
